@@ -24,6 +24,7 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
     if (user?.id) {
       kyc.loadProgress(user.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const steps = [

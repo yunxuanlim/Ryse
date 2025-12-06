@@ -224,15 +224,20 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
             )}
 
             <button
-              onClick={() => {
+              onClick={async () => {
                 const cleanPhone = '+60' + phoneNumber.replace(/-/g, '');
-                if (isNewUser) auth.registerUser(cleanPhone);
-                else auth.requestOTP(cleanPhone);
+                const success = isNewUser 
+                  ? await auth.registerUser(cleanPhone)
+                  : await auth.requestOTP(cleanPhone);
+                if (success) {
+                  setLocalError(null);
+                  // Brief success indication via placeholder change handled by loading state
+                }
               }}
               disabled={auth.isLoading}
               className="text-black font-medium underline"
             >
-              Resend code
+              {auth.isLoading ? 'Sending...' : 'Resend code'}
             </button>
           </div>
         )}
