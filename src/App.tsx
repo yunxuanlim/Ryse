@@ -70,7 +70,7 @@ export default function App() {
   // Get current time for status bar
   const getCurrentTime = () => {
     const now = new Date();
-    return now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false });
+    return now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
   };
 
   const [currentTime, setCurrentTime] = useState(getCurrentTime());
