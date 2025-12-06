@@ -1,5 +1,12 @@
+// ============================================
+// Onboarding Screen - OBSIDIAN Neon-Noir Design
+// Deep black background, neon green accents
+// ============================================
+
 import { useState } from 'react';
-import { Sparkles, Shield, TrendingUp, ChevronRight, ArrowRight } from 'lucide-react';
+import { Sparkles, Shield, TrendingUp, ArrowRight } from 'lucide-react';
+import { PillButton } from './ui/pill-button';
+import { ProgressDots } from './ui/progress-dots';
 
 interface OnboardingScreenProps {
   onLogin: () => void;
@@ -34,79 +41,81 @@ export function OnboardingScreen({ onLogin, onNavigateToLogin }: OnboardingScree
   const Icon = currentStep.icon;
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-obsidian-100">
       {/* Skip Button - Top Right */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="flex justify-end px-6 pt-4">
         <button
           onClick={onLogin}
-          className="px-4 py-2 text-gray-500 text-sm font-medium"
+          className="text-white-low text-sm font-medium hover:text-white-high transition-colors"
         >
           Skip
         </button>
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 pt-16">
-        {/* Icon */}
-        <div className="mb-8">
-          <div className="w-24 h-24 bg-black rounded-full flex items-center justify-center">
-            <Icon className="w-12 h-12 text-white" strokeWidth={1.5} />
+      <div className="flex-1 flex flex-col items-center justify-center px-8">
+        {/* Icon with Neon Circle */}
+        <div className="mb-8 relative">
+          <div 
+            className="w-20 h-20 rounded-full flex items-center justify-center glow-neon-md"
+            style={{ backgroundColor: 'var(--neon-primary)' }}
+          >
+            <Icon className="w-10 h-10 text-obsidian-100" strokeWidth={1.5} />
           </div>
+          {/* Decorative sparkles */}
+          <div className="absolute -top-2 -right-2 text-2xl animate-particle-float">✨</div>
+          <div className="absolute -bottom-1 -left-2 text-xl animate-particle-float" style={{ animationDelay: '0.5s' }}>⭐</div>
         </div>
 
         {/* Title & Description */}
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
+        <h1 className="text-3xl font-bold text-white-high text-center mb-3 tracking-tight">
           {currentStep.title}
         </h1>
-        <p className="text-gray-600 text-center mb-3 text-lg">
+        <p className="text-neon text-center mb-3 text-lg font-medium">
           {currentStep.subtitle}
         </p>
-        <p className="text-gray-400 text-center max-w-sm text-base leading-relaxed">
+        <p className="text-white-low text-center max-w-sm text-base leading-relaxed">
           {currentStep.description}
         </p>
       </div>
 
       {/* Bottom Section */}
-      <div className="p-8">
+      <div className="px-8 pb-8">
         {/* Progress Dots */}
-        <div className="flex justify-center gap-2 mb-8">
-          {onboardingSteps.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setStep(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === step 
-                  ? 'w-8 bg-black' 
-                  : index < step 
-                    ? 'bg-black' 
-                    : 'bg-gray-300'
-              }`}
-            />
-          ))}
+        <div className="mb-8">
+          <ProgressDots 
+            total={onboardingSteps.length} 
+            current={step}
+            onDotClick={setStep}
+          />
         </div>
 
         {/* Buttons */}
         {step < onboardingSteps.length - 1 ? (
-          <button
+          <PillButton
             onClick={() => setStep(step + 1)}
-            className="w-full py-4 bg-black text-white rounded-full font-semibold text-lg transition-all active:scale-[0.98]"
+            className="w-full"
+            size="lg"
+            variant="neon"
           >
             Next
-          </button>
+          </PillButton>
         ) : (
           <div className="space-y-3">
-            <button
+            <PillButton
               onClick={onNavigateToLogin || onLogin}
-              className="w-full py-4 bg-black text-white rounded-full font-semibold text-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full"
+              size="lg"
+              variant="neon"
+              rightIcon={<ArrowRight className="w-5 h-5" />}
             >
               Get Started
-              <ArrowRight className="w-5 h-5" />
-            </button>
+            </PillButton>
             <button
               onClick={onLogin}
-              className="w-full py-4 text-gray-600 font-medium text-base"
+              className="w-full py-4 text-white-low font-medium text-base hover:text-white-high transition-colors"
             >
-              Already have an account? <span className="text-black font-semibold">Log In</span>
+              Already have an account? <span className="text-neon font-semibold">Log In</span>
             </button>
           </div>
         )}

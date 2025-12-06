@@ -1,6 +1,11 @@
+// ============================================
+// Security Screen - OBSIDIAN Neon-Noir Design
+// Deep black background with neon security visuals
+// ============================================
+
 import { useState } from 'react';
 import { Screen } from '../App';
-import { ArrowLeft, Shield, Mic, AlertTriangle, CheckCircle, Lock, Fingerprint, Eye } from 'lucide-react';
+import { ArrowLeft, Shield, Mic, AlertTriangle, CheckCircle, Lock, Eye, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface SecurityScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -15,7 +20,7 @@ export function SecurityScreen({ navigateTo }: SecurityScreenProps) {
       name: 'Voice Liveness Detection',
       description: 'Detects real human vs recorded/cloned audio',
       icon: Mic,
-      color: 'from-purple-500 to-blue-500',
+      emoji: '🎤',
       status: 'active'
     },
     {
@@ -23,7 +28,7 @@ export function SecurityScreen({ navigateTo }: SecurityScreenProps) {
       name: 'Random Challenge-Response',
       description: 'Random questions that deepfakes can\'t answer',
       icon: AlertTriangle,
-      color: 'from-blue-500 to-cyan-500',
+      emoji: '🧠',
       status: 'active'
     },
     {
@@ -31,7 +36,7 @@ export function SecurityScreen({ navigateTo }: SecurityScreenProps) {
       name: 'Behavioral Biometrics',
       description: 'Analyzes your unique speech patterns',
       icon: Eye,
-      color: 'from-cyan-500 to-teal-500',
+      emoji: '👁️',
       status: 'active'
     },
     {
@@ -39,215 +44,135 @@ export function SecurityScreen({ navigateTo }: SecurityScreenProps) {
       name: 'Adaptive Multi-Factor Auth',
       description: 'Risk-based verification layers',
       icon: Lock,
-      color: 'from-teal-500 to-green-500',
+      emoji: '🔐',
       status: 'active'
     }
   ];
 
   const scamPatterns = [
-    { type: 'Fake Police', blocked: 127, trend: 'up' },
-    { type: 'Fake Investment', blocked: 89, trend: 'down' },
-    { type: 'Fake Family Emergency', blocked: 54, trend: 'up' }
+    { type: 'Fake Police', blocked: 127, trend: 'up', emoji: '👮' },
+    { type: 'Fake Investment', blocked: 89, trend: 'down', emoji: '💰' },
+    { type: 'Fake Family Emergency', blocked: 54, trend: 'up', emoji: '👨‍👩‍👧' }
   ];
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-y-auto">
+    <div className="h-full flex flex-col bg-obsidian-100 overflow-y-auto scrollbar-obsidian">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 rounded-b-3xl shadow-xl">
-        <div className="flex items-center gap-4 mb-6">
+      <div className="bg-obsidian-200 px-6 py-4 border-b" style={{ borderColor: 'var(--white-divider)' }}>
+        <div className="flex items-center gap-4">
           <button
             onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-obsidian-300 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className="w-6 h-6 text-white-high" />
           </button>
-          <div>
-            <h2 className="text-white">Ryse Shield Pro</h2>
-            <p className="text-purple-200 text-sm">AI Anti-Scam Protection</p>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-white-high">Ryse Shield Pro</h2>
+            <p className="text-white-low text-sm">AI-powered security</p>
           </div>
-        </div>
-
-        {/* Protection Status */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h3 className="text-white">All Systems Active</h3>
-              <p className="text-green-200">8 protection layers enabled</p>
-            </div>
-          </div>
-          <div className="bg-white/10 rounded-xl p-3">
-            <p className="text-purple-200 text-sm mb-1">Threats Blocked This Month</p>
-            <div className="text-white text-3xl">270</div>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center glow-neon-md" style={{ backgroundColor: 'var(--neon-primary)' }}>
+            <Shield className="w-5 h-5 text-obsidian-100" />
           </div>
         </div>
       </div>
 
-      {/* Protection Layers */}
-      <div className="px-6 py-6">
-        <h3 className="text-gray-900 mb-4">Protection Layers</h3>
-        <div className="space-y-3">
+      {/* Protection Status */}
+      <div className="px-4 pt-4">
+        <div className="card-neon-border text-center animate-neon-pulse">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 glow-neon-lg" style={{ backgroundColor: 'rgba(57, 255, 20, 0.2)' }}>
+            <Shield className="w-8 h-8 text-neon" />
+          </div>
+          <h3 className="text-white-high font-bold text-lg mb-1">Fully Protected</h3>
+          <p className="text-white-low text-sm">All security layers active</p>
+          <div className="flex items-center justify-center gap-2 mt-3">
+            <CheckCircle className="w-4 h-4 text-neon" />
+            <span className="text-neon text-sm font-medium">Voice Shield Active</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Security Features */}
+      <div className="px-4 pt-4">
+        <h3 className="text-white-high font-semibold mb-3">Active Protection</h3>
+        <div className="space-y-2">
           {securityFeatures.map((feature) => {
             const Icon = feature.icon;
+            const isExpanded = activeDemo === feature.id;
+
             return (
-              <button
-                key={feature.id}
-                onClick={() => setActiveDemo(activeDemo === feature.id ? null : feature.id)}
-                className="w-full bg-white rounded-2xl p-5 shadow-lg border border-gray-100 text-left"
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Icon className="w-7 h-7 text-white" />
+              <div key={feature.id} className="card-obsidian">
+                <button
+                  onClick={() => setActiveDemo(isExpanded ? null : feature.id)}
+                  className="w-full flex items-center gap-3"
+                >
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-obsidian-300">
+                    {feature.emoji}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-gray-900">{feature.name}</h4>
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="flex-1 text-left">
+                    <h4 className="text-white-high font-medium text-sm">{feature.name}</h4>
+                    <p className="text-white-muted text-xs">{feature.description}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-neon text-xs font-medium">Active</span>
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-white-low" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-white-low" />
+                    )}
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t" style={{ borderColor: 'var(--white-divider)' }}>
+                    <div className="bg-obsidian-300 rounded-lg p-3">
+                      <p className="text-white-low text-xs">
+                        {feature.id === 'liveness' && 'Uses AI to analyze voice patterns and detect pre-recorded audio or voice clones.'}
+                        {feature.id === 'challenge' && 'Generates random questions that only a real person would know how to answer.'}
+                        {feature.id === 'behavioral' && 'Tracks your unique speaking patterns to verify your identity.'}
+                        {feature.id === 'mfa' && 'Adds extra verification steps based on transaction risk level.'}
+                      </p>
                     </div>
-                    <p className="text-gray-600 text-sm">{feature.description}</p>
-                  </div>
-                </div>
-
-                {activeDemo === feature.id && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    {feature.id === 'liveness' && (
-                      <div className="bg-purple-50 rounded-xl p-4">
-                        <p className="text-purple-900 text-sm mb-3">Detection Indicators:</p>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-sm text-gray-700">Background noise variation</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-sm text-gray-700">Natural breathing sounds</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-sm text-gray-700">Complex audio spectrum</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {feature.id === 'challenge' && (
-                      <div className="bg-blue-50 rounded-xl p-4">
-                        <p className="text-blue-900 text-sm mb-3">Example Challenge:</p>
-                        <div className="space-y-2 text-sm">
-                          <p className="text-gray-700"><span className="text-blue-600">AI:</span> "Please state your mother's maiden name"</p>
-                          <p className="text-gray-700"><span className="text-blue-600">AI:</span> "What time is it now?"</p>
-                          <p className="text-gray-700"><span className="text-blue-600">AI:</span> "What is 15 plus 23?"</p>
-                        </div>
-                      </div>
-                    )}
-
-                    {feature.id === 'behavioral' && (
-                      <div className="bg-cyan-50 rounded-xl p-4">
-                        <p className="text-cyan-900 text-sm mb-3">Your Speech Profile:</p>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-700">Average speed</span>
-                            <span className="text-cyan-700">140 words/min</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-700">Common thinking sound</span>
-                            <span className="text-cyan-700">"emmm"</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-700">Verbal tic</span>
-                            <span className="text-cyan-700">Adds "lah"</span>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {feature.id === 'mfa' && (
-                      <div className="bg-teal-50 rounded-xl p-4">
-                        <p className="text-teal-900 text-sm mb-3">Risk-Based Verification:</p>
-                        <div className="space-y-3">
-                          <div>
-                            <p className="text-xs text-teal-700 mb-1">Low Risk (RM 10)</p>
-                            <div className="flex gap-2">
-                              <div className="px-2 py-1 bg-green-500 rounded text-white text-xs">Voice</div>
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-xs text-teal-700 mb-1">High Risk (RM 2000)</p>
-                            <div className="flex gap-2 flex-wrap">
-                              <div className="px-2 py-1 bg-orange-500 rounded text-white text-xs">Voice</div>
-                              <div className="px-2 py-1 bg-orange-500 rounded text-white text-xs">Liveness</div>
-                              <div className="px-2 py-1 bg-orange-500 rounded text-white text-xs">Challenge</div>
-                              <div className="px-2 py-1 bg-orange-500 rounded text-white text-xs">Fingerprint</div>
-                              <div className="px-2 py-1 bg-orange-500 rounded text-white text-xs">OTP</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
       </div>
 
-      {/* Scam Pattern Recognition */}
-      <div className="px-6 pb-6">
-        <h3 className="text-gray-900 mb-4">Scam Pattern Recognition</h3>
-        <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-          <p className="text-gray-600 text-sm mb-4">Detected & blocked this month:</p>
+      {/* Scam Protection Stats */}
+      <div className="px-4 pt-4 pb-24">
+        <h3 className="text-white-high font-semibold mb-3">Threats Blocked</h3>
+        <div className="card-obsidian">
           <div className="space-y-4">
             {scamPatterns.map((pattern, index) => (
-              <div key={index}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-800">{pattern.type}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-900">{pattern.blocked}</span>
-                    {pattern.trend === 'up' ? (
-                      <div className="text-red-500">↑</div>
-                    ) : (
-                      <div className="text-green-500">↓</div>
-                    )}
-                  </div>
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-obsidian-300 rounded-xl flex items-center justify-center text-xl">
+                  {pattern.emoji}
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-gradient-to-r from-red-500 to-orange-500 h-2 rounded-full"
-                    style={{ width: `${(pattern.blocked / 150) * 100}%` }}
-                  ></div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white-high text-sm font-medium">{pattern.type}</span>
+                    <span className="text-neon text-sm font-mono">{pattern.blocked}</span>
+                  </div>
+                  <div className="w-full bg-obsidian-300 rounded-full h-1.5">
+                    <div 
+                      className="h-1.5 rounded-full transition-all duration-500"
+                      style={{ 
+                        width: `${(pattern.blocked / 150) * 100}%`, 
+                        backgroundColor: 'var(--neon-primary)' 
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Example Scam Alert */}
-      <div className="px-6 pb-32">
-        <h3 className="text-gray-900 mb-4">How Shield Pro Works</h3>
-        <div className="bg-gradient-to-r from-red-100 to-orange-100 rounded-2xl p-5 border border-red-200">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-6 h-6 text-white" />
+          <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--white-divider)' }}>
+            <div className="flex items-center justify-between">
+              <span className="text-white-low text-sm">Total blocked this month</span>
+              <span className="text-neon font-bold font-mono-nums">270</span>
             </div>
-            <div>
-              <h4 className="text-red-900 mb-1">Example Scam Detected</h4>
-              <p className="text-red-700 text-sm">User: "Transfer RM800, police said my account has issues"</p>
-            </div>
-          </div>
-
-          <div className="bg-white/50 rounded-xl p-4">
-            <p className="text-red-900 mb-2">🚨 SCAM ALERT!</p>
-            <p className="text-red-800 text-sm mb-3">Real police or banks NEVER:</p>
-            <ul className="space-y-1 text-red-700 text-sm mb-3">
-              <li>✗ Ask you to transfer money</li>
-              <li>✗ Request money via phone</li>
-              <li>✗ Threaten arrest</li>
-            </ul>
-            <p className="text-red-900 text-sm">Suggestion: Hang up, dial 999 or visit police station</p>
           </div>
         </div>
       </div>

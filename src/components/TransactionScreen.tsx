@@ -1,8 +1,13 @@
+// ============================================
+// Transaction Screen - OBSIDIAN Neon-Noir Design
+// Payment flow with neon accents and glassmorphism
+// ============================================
+
 import { useState, useEffect } from 'react';
 import { Screen } from '../App';
-import { ArrowLeft, Shield, Mic, Fingerprint, AlertTriangle, CheckCircle, X } from 'lucide-react';
-import { RyseLogo } from './RyseLogo';
-import { BottomNav } from './BottomNav';
+import { X, ArrowUp, Search, ChevronRight, AlertTriangle, CheckCircle, Fingerprint } from 'lucide-react';
+import { PillButton } from './ui/pill-button';
+import { PinDots } from './ui/pin-dots';
 
 interface TransactionScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -12,393 +17,356 @@ interface TransactionScreenProps {
   };
 }
 
-type SecurityStep = 'voice' | 'liveness' | 'challenge' | 'fingerprint' | 'result';
+type PaymentStep = 'amount' | 'recipient' | 'confirm' | 'pin' | 'security' | 'success' | 'scam_warning';
 
 export function TransactionScreen({ navigateTo, initialData }: TransactionScreenProps) {
+  const [step, setStep] = useState<PaymentStep>('amount');
   const [amount, setAmount] = useState(initialData?.amount || '');
   const [recipient, setRecipient] = useState(initialData?.recipient || '');
-  const [showSecurity, setShowSecurity] = useState(false);
-  const [currentStep, setCurrentStep] = useState<SecurityStep>('voice');
-  const [isScamDetected, setIsScamDetected] = useState(false);
-  const [securityPassed, setSecurityPassed] = useState({
-    voice: false,
-    liveness: false,
-    challenge: false,
-    fingerprint: false
-  });
+  const [pin, setPin] = useState('');
+  const [pinError, setPinError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Update amount and recipient when initialData changes
+  const recentContacts = [
+    { name: 'Ahmad', phone: '+60 12-345-6789', avatar: 'A' },
+    { name: 'Siti', phone: '+60 13-456-7890', avatar: 'S' },
+    { name: 'Wei Ming', phone: '+60 14-567-8901', avatar: 'W' },
+  ];
+
+  const currentBalance = 3847.50;
+
   useEffect(() => {
-    if (initialData?.amount) {
-      setAmount(initialData.amount);
-    }
-    if (initialData?.recipient) {
-      setRecipient(initialData.recipient);
-    }
+    if (initialData?.amount) setAmount(initialData.amount);
+    if (initialData?.recipient) setRecipient(initialData.recipient);
   }, [initialData]);
 
-  const handleTransfer = () => {
+  const handleAmountInput = (value: string) => {
+    if (/^\d*\.?\d{0,2}$/.test(value)) {
+      setAmount(value);
+    }
+  };
+
+  const handlePayment = async () => {
     const amountNum = parseFloat(amount);
-    const currentBalance = 3847.50; // Current balance
     
-    // Check if amount exceeds balance
     if (amountNum > currentBalance) {
-      alert(`Your balance is insufficient. Your current balance is RM ${currentBalance.toFixed(2)}, but you're trying to transfer RM ${amountNum.toFixed(2)}. Please top up your account to complete this transaction.`);
       return;
     }
-    
+
     if (amountNum > 1000) {
-      setShowSecurity(true);
-      setCurrentStep('voice');
-      // Simulate scam detection (30% chance for demo)
-      setIsScamDetected(Math.random() < 0.3);
+      setStep('security');
+      if (Math.random() < 0.3) {
+        setTimeout(() => setStep('scam_warning'), 2000);
+      } else {
+        setTimeout(() => setStep('pin'), 2000);
+      }
     } else {
-      // Direct transfer for amounts <= 1000
-      alert('Transfer successful!');
-      setAmount('');
-      setRecipient('');
+      setStep('pin');
     }
   };
 
-  const handleVoiceCheck = () => {
-    setSecurityPassed(prev => ({ ...prev, voice: true }));
-    setTimeout(() => setCurrentStep('liveness'), 1000);
+  const handlePinSubmit = async (pinValue: string) => {
+    setIsLoading(true);
+    
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    if (pinValue === '1234') {
+      setStep('success');
+    } else {
+      setPinError(true);
+      setTimeout(() => {
+        setPinError(false);
+        setPin('');
+      }, 500);
+    }
+    setIsLoading(false);
   };
 
-  const handleLivenessCheck = () => {
-    setSecurityPassed(prev => ({ ...prev, liveness: true }));
-    setTimeout(() => setCurrentStep('challenge'), 1000);
+  const handleClose = () => {
+    navigateTo('dashboard');
   };
 
-  const handleChallengeCheck = () => {
-    setSecurityPassed(prev => ({ ...prev, challenge: true }));
-    setTimeout(() => setCurrentStep('fingerprint'), 1000);
-  };
-
-  const handleFingerprintCheck = () => {
-    setSecurityPassed(prev => ({ ...prev, fingerprint: true }));
-    setTimeout(() => setCurrentStep('result'), 1000);
-  };
-
-  const resetTransaction = () => {
-    setShowSecurity(false);
-    setAmount('');
-    setRecipient('');
-    setSecurityPassed({ voice: false, liveness: false, challenge: false, fingerprint: false });
-    setCurrentStep('voice');
-  };
-
-  if (showSecurity) {
+  // Amount Screen
+  if (step === 'amount') {
     return (
-      <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 via-white to-blue-50">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 rounded-b-3xl shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <RyseLogo navigateTo={navigateTo} />
-            <button
-              onClick={resetTransaction}
-              className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
-            >
-              <X className="w-5 h-5 text-white" />
-            </button>
-          </div>
-          <h2 className="text-white">Security Verification</h2>
-          <p className="text-purple-200 text-sm">High-value transaction detected</p>
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex items-center justify-between px-4 py-4">
+          <button onClick={handleClose} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
+          </button>
+          <span className="text-sm text-white-low font-medium">
+            Balance: RM {currentBalance.toLocaleString()}
+          </span>
         </div>
 
-        {/* Security Steps */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          {/* Transaction Info */}
-          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 mb-6">
-            <p className="text-gray-600 text-sm mb-2">Transferring to</p>
-            <h3 className="text-gray-900 mb-3">{recipient}</h3>
-            <div className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600">
-              RM {amount}
-            </div>
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <div className="flex items-baseline gap-1 mb-2">
+            <span className="text-2xl text-white-muted">RM</span>
+            <input
+              type="text"
+              inputMode="decimal"
+              value={amount}
+              onChange={(e) => handleAmountInput(e.target.value)}
+              placeholder="0"
+              className="text-7xl font-bold text-neon text-center bg-transparent border-none outline-none w-full font-mono-nums text-glow"
+              style={{ caretColor: 'var(--neon-primary)' }}
+              autoFocus
+            />
           </div>
-
-          {/* Progress Steps */}
-          <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 mb-6">
-            <div className="space-y-4">
-              {/* Voice Recognition */}
-              <div className={`flex items-center gap-3 ${currentStep === 'voice' ? 'opacity-100' : 'opacity-50'}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  securityPassed.voice ? 'bg-green-500' : 'bg-purple-500'
-                }`}>
-                  {securityPassed.voice ? (
-                    <CheckCircle className="w-6 h-6 text-white" />
-                  ) : (
-                    <Mic className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-gray-900">Voice Recognition</h4>
-                  <p className="text-gray-600 text-sm">
-                    {securityPassed.voice ? 'Verified' : 'Verifying your voice...'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Liveness Detection */}
-              <div className={`flex items-center gap-3 ${currentStep === 'liveness' ? 'opacity-100' : 'opacity-50'}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  securityPassed.liveness ? 'bg-green-500' : 'bg-blue-500'
-                }`}>
-                  {securityPassed.liveness ? (
-                    <CheckCircle className="w-6 h-6 text-white" />
-                  ) : (
-                    <Mic className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-gray-900">Liveness Detection</h4>
-                  <p className="text-gray-600 text-sm">
-                    {securityPassed.liveness ? 'Verified' : 'Checking for deepfake...'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Challenge Questions */}
-              <div className={`flex items-center gap-3 ${currentStep === 'challenge' ? 'opacity-100' : 'opacity-50'}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  securityPassed.challenge ? 'bg-green-500' : 'bg-cyan-500'
-                }`}>
-                  {securityPassed.challenge ? (
-                    <CheckCircle className="w-6 h-6 text-white" />
-                  ) : (
-                    <Shield className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-gray-900">Challenge Questions</h4>
-                  <p className="text-gray-600 text-sm">
-                    {securityPassed.challenge ? 'Verified' : 'Answer verification questions...'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Fingerprint */}
-              <div className={`flex items-center gap-3 ${currentStep === 'fingerprint' ? 'opacity-100' : 'opacity-50'}`}>
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  securityPassed.fingerprint ? 'bg-green-500' : 'bg-teal-500'
-                }`}>
-                  {securityPassed.fingerprint ? (
-                    <CheckCircle className="w-6 h-6 text-white" />
-                  ) : (
-                    <Fingerprint className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-gray-900">Fingerprint Verification</h4>
-                  <p className="text-gray-600 text-sm">
-                    {securityPassed.fingerprint ? 'Verified' : 'Place finger on sensor...'}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Current Step Action */}
-          {currentStep === 'voice' && !securityPassed.voice && (
-            <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl p-5 border border-purple-200">
-              <div className="flex items-center gap-3 mb-4">
-                <Mic className="w-6 h-6 text-purple-600" />
-                <h4 className="text-purple-900">Voice Verification Required</h4>
-              </div>
-              <p className="text-purple-700 text-sm mb-4">Please say: "I authorize this transfer"</p>
-              <button
-                onClick={handleVoiceCheck}
-                className="w-full py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl"
-              >
-                Start Voice Check
-              </button>
-            </div>
-          )}
-
-          {currentStep === 'liveness' && !securityPassed.liveness && (
-            <div className="bg-gradient-to-r from-blue-100 to-cyan-100 rounded-2xl p-5 border border-blue-200">
-              <div className="flex items-center gap-3 mb-4">
-                <Shield className="w-6 h-6 text-blue-600" />
-                <h4 className="text-blue-900">Liveness Check</h4>
-              </div>
-              <p className="text-blue-700 text-sm mb-4">Please cough into the microphone</p>
-              <button
-                onClick={handleLivenessCheck}
-                className="w-full py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl"
-              >
-                Perform Liveness Check
-              </button>
-            </div>
-          )}
-
-          {currentStep === 'challenge' && !securityPassed.challenge && (
-            <div className="bg-gradient-to-r from-cyan-100 to-teal-100 rounded-2xl p-5 border border-cyan-200">
-              <div className="flex items-center gap-3 mb-4">
-                <AlertTriangle className="w-6 h-6 text-cyan-600" />
-                <h4 className="text-cyan-900">Challenge Question</h4>
-              </div>
-              <p className="text-cyan-700 text-sm mb-2">What is your RyScore tier?</p>
-              <div className="space-y-2 mb-4">
-                <button
-                  onClick={handleChallengeCheck}
-                  className="w-full py-2 bg-white border border-cyan-300 rounded-xl text-cyan-900 text-sm"
-                >
-                  Gold
-                </button>
-                <button className="w-full py-2 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm">
-                  Silver
-                </button>
-                <button className="w-full py-2 bg-white border border-gray-300 rounded-xl text-gray-700 text-sm">
-                  Platinum
-                </button>
-              </div>
-            </div>
-          )}
-
-          {currentStep === 'fingerprint' && !securityPassed.fingerprint && (
-            <div className="bg-gradient-to-r from-teal-100 to-green-100 rounded-2xl p-5 border border-teal-200">
-              <div className="flex items-center gap-3 mb-4">
-                <Fingerprint className="w-6 h-6 text-teal-600" />
-                <h4 className="text-teal-900">Fingerprint Required</h4>
-              </div>
-              <p className="text-teal-700 text-sm mb-4">Place your finger on the sensor</p>
-              <button
-                onClick={handleFingerprintCheck}
-                className="w-full py-3 bg-gradient-to-r from-teal-500 to-green-500 text-white rounded-xl"
-              >
-                Scan Fingerprint
-              </button>
-            </div>
-          )}
-
-          {/* Result */}
-          {currentStep === 'result' && (
-            <div>
-              {isScamDetected ? (
-                <div className="bg-gradient-to-r from-red-100 to-orange-100 rounded-2xl p-6 border border-red-200 text-center">
-                  <div className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <X className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-red-900 mb-3">Transaction Blocked</h3>
-                  <p className="text-red-700 text-sm mb-4">
-                    Our AI detected suspicious patterns consistent with scam attempts. Your account has been protected.
-                  </p>
-                  <div className="bg-white/50 rounded-xl p-4 mb-4">
-                    <p className="text-red-900 text-sm mb-2">Detected Issues:</p>
-                    <ul className="text-left text-red-700 text-sm space-y-1">
-                      <li>• Abnormal speech patterns detected</li>
-                      <li>• Voice stress analysis shows pressure</li>
-                      <li>• Unusual timing for large transfer</li>
-                    </ul>
-                  </div>
-                  <button
-                    onClick={resetTransaction}
-                    className="w-full py-3 bg-red-600 text-white rounded-xl"
-                  >
-                    Close
-                  </button>
-                </div>
-              ) : (
-                <div className="bg-gradient-to-r from-green-100 to-emerald-100 rounded-2xl p-6 border border-green-200 text-center">
-                  <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
-                    <CheckCircle className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-green-900 mb-3">Verification Complete</h3>
-                  <p className="text-green-700 text-sm mb-4">
-                    All security checks passed. Your transaction is approved.
-                  </p>
-                  <div className="bg-white/50 rounded-xl p-4 mb-4">
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-green-800">Recipient:</span>
-                      <span className="text-green-900">{recipient}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-green-800">Amount:</span>
-                      <span className="text-green-900">RM {amount}</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      alert('Transfer successful!');
-                      resetTransaction();
-                      navigateTo('dashboard');
-                    }}
-                    className="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl mb-2"
-                  >
-                    Confirm Transfer
-                  </button>
-                  <button
-                    onClick={resetTransaction}
-                    className="w-full py-3 text-gray-600"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
+          {parseFloat(amount) > currentBalance && (
+            <div className="flex items-center gap-2 text-white-high text-sm alert-pattern px-3 py-1 rounded-lg">
+              <span>Exceeds your balance</span>
             </div>
           )}
         </div>
 
-        <BottomNav currentScreen="dashboard" navigateTo={navigateTo} />
+        <div className="p-6">
+          <PillButton
+            onClick={() => setStep('recipient')}
+            disabled={!amount || parseFloat(amount) <= 0 || parseFloat(amount) > currentBalance}
+            className="w-full"
+            size="lg"
+            variant="neon"
+            rightIcon={<ArrowUp className="w-5 h-5" />}
+          >
+            Pay
+          </PillButton>
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-y-auto pb-24">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 rounded-b-3xl shadow-xl">
-        <div className="flex items-center justify-between mb-4">
-          <RyseLogo navigateTo={navigateTo} />
-          <button
-            onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
-          >
-            <ArrowLeft className="w-5 h-5 text-white" />
+  // Recipient Screen
+  if (step === 'recipient') {
+    return (
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex items-center justify-between px-4 py-4 border-b" style={{ borderColor: 'var(--white-divider)' }}>
+          <button onClick={() => setStep('amount')} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
+          </button>
+          <span className="font-semibold text-neon">RM {parseFloat(amount).toFixed(2)}</span>
+          <div className="w-10" />
+        </div>
+
+        <div className="px-6 py-4">
+          <div className="flex items-center gap-3 bg-obsidian-200 border rounded-2xl px-4 py-3" style={{ borderColor: 'var(--white-divider)' }}>
+            <Search className="w-5 h-5 text-white-muted" />
+            <input
+              type="text"
+              value={recipient}
+              onChange={(e) => setRecipient(e.target.value)}
+              placeholder="Name, phone, or email"
+              className="flex-1 bg-transparent outline-none text-white-high placeholder-white-muted"
+              autoFocus
+            />
+          </div>
+        </div>
+
+        <div className="flex-1 px-6 overflow-y-auto scrollbar-obsidian">
+          <p className="text-white-low text-sm mb-3">Recent</p>
+          {recentContacts.map((contact) => (
+            <button
+              key={contact.phone}
+              onClick={() => {
+                setRecipient(contact.name);
+                setStep('confirm');
+              }}
+              className="w-full flex items-center gap-4 py-3 hover:bg-obsidian-300 rounded-2xl px-2 transition-colors"
+            >
+              <div 
+                className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-obsidian-100 glow-neon-sm"
+                style={{ backgroundColor: 'var(--neon-primary)' }}
+              >
+                {contact.avatar}
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-medium text-white-high">{contact.name}</p>
+                <p className="text-sm text-white-low">{contact.phone}</p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white-low" />
+            </button>
+          ))}
+        </div>
+
+        {recipient && (
+          <div className="p-6 border-t" style={{ borderColor: 'var(--white-divider)' }}>
+            <PillButton
+              onClick={() => setStep('confirm')}
+              className="w-full"
+              size="lg"
+              variant="neon"
+            >
+              Continue
+            </PillButton>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Confirm Screen
+  if (step === 'confirm') {
+    return (
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex items-center px-4 py-4">
+          <button onClick={() => setStep('recipient')} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
           </button>
         </div>
-        <h2 className="text-white">Send Money</h2>
-        <p className="text-purple-200 text-sm">Transfer to anyone instantly</p>
-      </div>
 
-      {/* Transfer Form */}
-      <div className="px-6 py-6">
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-4">
-          <label className="block text-gray-700 mb-2">Recipient</label>
-          <input
-            type="text"
-            value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
-            placeholder="Enter name or phone number"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500"
-          />
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <div 
+            className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-2xl text-obsidian-100 mb-4 glow-neon-lg"
+            style={{ backgroundColor: 'var(--neon-primary)' }}
+          >
+            {recipient.charAt(0).toUpperCase()}
+          </div>
+          <p className="text-white-low mb-2">Pay {recipient}</p>
+          <p className="text-5xl font-bold text-neon mb-1 font-mono-nums text-glow">RM {parseFloat(amount).toFixed(2)}</p>
         </div>
 
-        <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-6">
-          <label className="block text-gray-700 mb-2">Amount (RM)</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:border-purple-500 text-2xl"
-          />
-          {parseFloat(amount) > 1000 && (
-            <div className="mt-3 flex items-start gap-2 text-orange-700 text-sm">
-              <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <p>Enhanced security verification required for amounts above RM 1,000</p>
-            </div>
-          )}
+        <div className="p-6">
+          <PillButton
+            onClick={handlePayment}
+            className="w-full"
+            size="lg"
+            variant="neon"
+          >
+            Pay
+          </PillButton>
+        </div>
+      </div>
+    );
+  }
+
+  // Security Check
+  if (step === 'security') {
+    return (
+      <div className="h-full flex flex-col bg-obsidian-100 items-center justify-center">
+        <div className="w-16 h-16 bg-obsidian-300 rounded-full flex items-center justify-center mb-4 animate-neon-pulse">
+          <Fingerprint className="w-8 h-8 text-neon" />
+        </div>
+        <p className="text-xl font-bold text-white-high mb-2">Verifying payment</p>
+        <p className="text-white-low">Running security checks...</p>
+      </div>
+    );
+  }
+
+  // Scam Warning
+  if (step === 'scam_warning') {
+    return (
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 animate-flicker alert-pattern">
+            <AlertTriangle className="w-10 h-10 text-obsidian-100" />
+          </div>
+          <h2 className="text-2xl font-bold text-white-high text-center mb-2">
+            Payment flagged
+          </h2>
+          <p className="text-white-low text-center mb-6">
+            This transaction has patterns similar to known scams. Please verify this is a legitimate payment.
+          </p>
+          
+          <div className="w-full card-obsidian border-l-4 mb-6" style={{ borderLeftColor: 'var(--white-high)' }}>
+            <p className="text-white-high text-sm font-medium mb-2">⚠️ Warning signs detected:</p>
+            <ul className="text-white-low text-sm space-y-1">
+              <li>• Unknown recipient</li>
+              <li>• Large amount</li>
+              <li>• Unusual payment pattern</li>
+            </ul>
+          </div>
         </div>
 
-        <button
-          onClick={handleTransfer}
-          disabled={!amount || !recipient}
-          className="w-full py-4 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Transfer
-        </button>
+        <div className="p-6 space-y-3">
+          <PillButton
+            onClick={() => setStep('pin')}
+            variant="secondary"
+            className="w-full"
+            size="lg"
+          >
+            I understand, continue anyway
+          </PillButton>
+          <PillButton
+            onClick={handleClose}
+            className="w-full"
+            size="lg"
+            variant="neon"
+          >
+            Cancel payment
+          </PillButton>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // PIN Screen
+  if (step === 'pin') {
+    return (
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex items-center px-4 py-4">
+          <button onClick={() => setStep('confirm')} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
+          </button>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <h2 className="text-2xl font-bold text-white-high mb-2">Enter PIN to pay</h2>
+          <p className="text-white-low mb-8">RM {parseFloat(amount).toFixed(2)} to {recipient}</p>
+          
+          <PinDots length={4} filled={pin.length} error={pinError} size="lg" />
+          
+          <input
+            type="tel"
+            inputMode="numeric"
+            value={pin}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+              setPin(value);
+              if (value.length === 4) {
+                handlePinSubmit(value);
+              }
+            }}
+            className="opacity-0 absolute"
+            autoFocus
+          />
+
+          <div className="mt-8 card-obsidian w-full max-w-xs">
+            <p className="text-white-low text-sm text-center">
+              <span className="font-medium text-neon">Dev Mode:</span> Use PIN <span className="font-mono bg-obsidian-300 text-neon px-2 py-0.5 rounded">1234</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Success Screen
+  if (step === 'success') {
+    return (
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex-1 flex flex-col items-center justify-center px-6">
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 glow-neon-xl" style={{ backgroundColor: 'rgba(57, 255, 20, 0.2)' }}>
+            <CheckCircle className="w-10 h-10 text-neon" />
+          </div>
+          <h2 className="text-2xl font-bold text-white-high mb-2">Payment sent!</h2>
+          <p className="text-white-low text-center">
+            RM {parseFloat(amount).toFixed(2)} sent to {recipient}
+          </p>
+        </div>
+
+        <div className="p-6">
+          <PillButton
+            onClick={handleClose}
+            className="w-full"
+            size="lg"
+            variant="neon"
+          >
+            Done
+          </PillButton>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
