@@ -464,3 +464,4 @@ export function BiometricLogin({ onScan }: { onScan: () => void }) {
 
 export default WelcomeScreen;
 
+

@@ -453,3 +453,4 @@ export function EarningsCoreMini({
 
 export default EarningsCore;
 
+
