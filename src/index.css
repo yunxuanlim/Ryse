@@ -2170,6 +2170,22 @@
   --font-size: 16px;
   --background: #fff;
   --foreground: oklch(.145 0 0);
+  
+  /* RYSE Design System - Cash App Inspired */
+  --ryse-green: #B9FF00;
+  --ryse-green-dark: #a8e600;
+  --ryse-black: #000000;
+  --ryse-white: #FFFFFF;
+  
+  /* Semantic Colors */
+  --ryse-success: #22C55E;
+  --ryse-error: #EF4444;
+  --ryse-warning: #F59E0B;
+  
+  /* Shadows */
+  --shadow-neon: 0 20px 60px rgba(185, 255, 0, 0.3);
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --card: #fff;
   --card-foreground: oklch(.145 0 0);
   --popover: oklch(1 0 0);

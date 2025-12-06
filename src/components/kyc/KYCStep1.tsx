@@ -1,10 +1,10 @@
 // ============================================
 // KYC Step 1: Personal Information
-// Cash App Inspired - Clean Forms
+// Cash App Inspired - Clean minimal forms
 // ============================================
 
 import { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, User } from 'lucide-react';
 import { KYCStep1Data, MALAYSIAN_STATES } from '../../types';
 import { formatICNumber, validateICNumber } from '../../services/kycService';
 
@@ -31,6 +31,7 @@ export function KYCStep1({ data, onUpdate, error }: KYCStep1Props) {
         onUpdate({ dateOfBirth: dateStr });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.icNumber]);
 
   const handleICChange = (value: string) => {
@@ -50,164 +51,145 @@ export function KYCStep1({ data, onUpdate, error }: KYCStep1Props) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 py-4">
       {/* Full Name */}
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">
-          Full Name
-        </label>
+        <label className="text-sm text-gray-600 mb-2 block">Full name (as per MyKad)</label>
         <input
           type="text"
           value={data.fullName}
           onChange={(e) => onUpdate({ fullName: e.target.value.toUpperCase() })}
-          placeholder="Full name as per MyKad"
-          className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 uppercase"
+          placeholder="FULL NAME"
+          className="w-full px-4 py-4 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black text-gray-900 uppercase"
         />
       </div>
 
       {/* IC Number */}
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">
-          IC Number (MyKad)
-        </label>
+        <label className="text-sm text-gray-600 mb-2 block">IC Number</label>
         <input
           type="text"
           value={data.icNumber}
           onChange={(e) => handleICChange(e.target.value)}
           placeholder="YYMMDD-SS-NNNN"
-          className={`w-full px-4 py-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent font-mono text-lg ${
-            icError ? 'border-red-300' : 'border-gray-200'
+          className={`w-full px-4 py-4 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black font-mono text-lg ${
+            icError ? 'ring-2 ring-red-400' : ''
           }`}
           maxLength={14}
         />
-        {icError ? (
-          <p className="text-red-500 text-xs mt-1">{icError}</p>
-        ) : (
-          <p className="text-gray-400 text-xs mt-1">Format: 900101-14-5678</p>
+        {icError && (
+          <p className="text-red-500 text-sm mt-2">{icError}</p>
         )}
       </div>
 
-      {/* Date of Birth */}
-      <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">
-          Date of Birth
-        </label>
-        <input
-          type="text"
-          value={data.dateOfBirth ? new Date(data.dateOfBirth).toLocaleDateString('en-GB') : ''}
-          className="w-full px-4 py-4 border border-gray-200 rounded-xl bg-gray-50 text-gray-500"
-          disabled
-          placeholder="Auto-filled from IC"
-        />
-        <p className="text-gray-400 text-xs mt-1">Auto-extracted from IC number</p>
-      </div>
+      {/* Date of Birth - Auto-filled */}
+      {data.dateOfBirth && (
+        <div>
+          <label className="text-sm text-gray-600 mb-2 block">Date of Birth</label>
+          <div className="w-full px-4 py-4 bg-gray-100 rounded-2xl text-gray-500">
+            {new Date(data.dateOfBirth).toLocaleDateString('en-MY', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Gender */}
       <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">
-          Gender
-        </label>
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => onUpdate({ gender: 'male' })}
-            className={`py-4 px-4 rounded-xl border transition-all font-medium ${
-              data.gender === 'male'
-                ? 'border-black bg-black text-white'
-                : 'border-gray-200 text-gray-600 hover:border-gray-300'
-            }`}
-          >
-            Male
-          </button>
-          <button
-            type="button"
-            onClick={() => onUpdate({ gender: 'female' })}
-            className={`py-4 px-4 rounded-xl border transition-all font-medium ${
-              data.gender === 'female'
-                ? 'border-black bg-black text-white'
-                : 'border-gray-200 text-gray-600 hover:border-gray-300'
-            }`}
-          >
-            Female
-          </button>
+        <label className="text-sm text-gray-600 mb-2 block">Gender</label>
+        <div className="flex gap-3">
+          {['male', 'female'].map((g) => (
+            <button
+              key={g}
+              type="button"
+              onClick={() => onUpdate({ gender: g as 'male' | 'female' })}
+              className={`flex-1 py-4 rounded-2xl font-medium transition-all ${
+                data.gender === g
+                  ? 'bg-black text-white'
+                  : 'bg-gray-100 text-gray-600'
+              }`}
+            >
+              {g === 'male' ? '👨 Male' : '👩 Female'}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Address Section */}
-      <div className="pt-4 border-t border-gray-100">
-        <p className="text-sm font-medium text-gray-700 mb-4">Address (Optional)</p>
-        
-        <div className="space-y-3">
+      {/* Address */}
+      <div>
+        <label className="text-sm text-gray-600 mb-2 block">Address Line 1</label>
+        <input
+          type="text"
+          value={data.addressLine1}
+          onChange={(e) => onUpdate({ addressLine1: e.target.value })}
+          placeholder="Street address"
+          className="w-full px-4 py-4 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-sm text-gray-600 mb-2 block">Postcode</label>
           <input
             type="text"
-            value={data.addressLine1 || ''}
-            onChange={(e) => onUpdate({ addressLine1: e.target.value })}
-            placeholder="Address Line 1"
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+            value={data.postcode}
+            onChange={(e) => onUpdate({ postcode: e.target.value.replace(/\D/g, '').slice(0, 5) })}
+            placeholder="00000"
+            className="w-full px-4 py-4 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
+            maxLength={5}
           />
-
-          <input
-            type="text"
-            value={data.addressLine2 || ''}
-            onChange={(e) => onUpdate({ addressLine2: e.target.value })}
-            placeholder="Address Line 2 (Optional)"
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-          />
-
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              type="text"
-              value={data.city || ''}
-              onChange={(e) => onUpdate({ city: e.target.value })}
-              placeholder="City"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-            />
-            <input
-              type="text"
-              value={data.postcode || ''}
-              onChange={(e) => onUpdate({ postcode: e.target.value.replace(/\D/g, '').slice(0, 5) })}
-              placeholder="Postcode"
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-              maxLength={5}
-            />
-          </div>
-
-          {/* State Dropdown */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowStateDropdown(!showStateDropdown)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-left flex items-center justify-between"
-            >
-              <span className={data.state ? 'text-gray-900' : 'text-gray-400'}>
-                {data.state || 'Select State'}
-              </span>
-              <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showStateDropdown ? 'rotate-180' : ''}`} />
-            </button>
-            
-            {showStateDropdown && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
-                {MALAYSIAN_STATES.map((state) => (
-                  <button
-                    key={state}
-                    type="button"
-                    onClick={() => {
-                      onUpdate({ state });
-                      setShowStateDropdown(false);
-                    }}
-                    className="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-700"
-                  >
-                    {state}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
+        <div>
+          <label className="text-sm text-gray-600 mb-2 block">City</label>
+          <input
+            type="text"
+            value={data.city}
+            onChange={(e) => onUpdate({ city: e.target.value })}
+            placeholder="City"
+            className="w-full px-4 py-4 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+      </div>
+
+      {/* State Dropdown */}
+      <div className="relative">
+        <label className="text-sm text-gray-600 mb-2 block">State</label>
+        <button
+          type="button"
+          onClick={() => setShowStateDropdown(!showStateDropdown)}
+          className="w-full px-4 py-4 bg-gray-100 rounded-2xl flex items-center justify-between text-left"
+        >
+          <span className={data.state ? 'text-gray-900' : 'text-gray-400'}>
+            {data.state || 'Select state'}
+          </span>
+          <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform ${showStateDropdown ? 'rotate-180' : ''}`} />
+        </button>
+        
+        {showStateDropdown && (
+          <div className="absolute z-10 w-full mt-2 bg-white rounded-2xl shadow-lg border border-gray-200 max-h-48 overflow-y-auto">
+            {MALAYSIAN_STATES.map((state) => (
+              <button
+                key={state}
+                type="button"
+                onClick={() => {
+                  onUpdate({ state });
+                  setShowStateDropdown(false);
+                }}
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 text-gray-900 first:rounded-t-2xl last:rounded-b-2xl"
+              >
+                {state}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {error && (
-        <p className="text-red-500 text-sm">{error}</p>
+        <div className="bg-red-50 rounded-2xl p-4 text-red-700 text-sm">
+          {error}
+        </div>
       )}
     </div>
   );

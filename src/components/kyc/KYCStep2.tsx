@@ -1,9 +1,10 @@
 // ============================================
-// KYC Step 2: Document Upload (MyKad)
+// KYC Step 2: MyKad Document Upload
+// Cash App Inspired - Clean upload interface
 // ============================================
 
 import { useState, useRef } from 'react';
-import { FileText, Camera, Upload, X, Check, AlertCircle, RotateCcw } from 'lucide-react';
+import { Camera, Upload, Check, RotateCcw, AlertCircle } from 'lucide-react';
 import { KYCStep2Data } from '../../types';
 
 interface KYCStep2Props {
@@ -12,305 +13,186 @@ interface KYCStep2Props {
   error: string | null;
 }
 
-type DocumentSide = 'front' | 'back';
-
 export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
-  const [activeCapture, setActiveCapture] = useState<DocumentSide | null>(null);
-  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const fileInputFrontRef = useRef<HTMLInputElement>(null);
-  const fileInputBackRef = useRef<HTMLInputElement>(null);
+  const [uploadingFront, setUploadingFront] = useState(false);
+  const [uploadingBack, setUploadingBack] = useState(false);
+  const frontInputRef = useRef<HTMLInputElement>(null);
+  const backInputRef = useRef<HTMLInputElement>(null);
 
-  const startCamera = async (side: DocumentSide) => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: 1280, height: 720 }
-      });
-      setCameraStream(stream);
-      setActiveCapture(side);
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
-    } catch (err) {
-      console.error('Camera access error:', err);
-      alert('Unable to access camera. Please check permissions or upload a file instead.');
-    }
-  };
+  const handleFileSelect = async (
+    file: File,
+    side: 'front' | 'back'
+  ) => {
+    const setSide = side === 'front' ? setUploadingFront : setUploadingBack;
+    setSide(true);
 
-  const stopCamera = () => {
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(track => track.stop());
-      setCameraStream(null);
-    }
-    setActiveCapture(null);
-  };
+    // Create preview URL
+    const previewUrl = URL.createObjectURL(file);
 
-  const capturePhoto = () => {
-    if (!videoRef.current || !canvasRef.current || !activeCapture) return;
+    // Simulate OCR extraction delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    if (!ctx) return;
-
-    // Set canvas size to video size
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    
-    // Draw video frame to canvas
-    ctx.drawImage(video, 0, 0);
-    
-    // Convert to blob
-    canvas.toBlob((blob) => {
-      if (blob) {
-        const file = new File([blob], `mykad-${activeCapture}.jpg`, { type: 'image/jpeg' });
-        const preview = canvas.toDataURL('image/jpeg', 0.9);
-        
-        if (activeCapture === 'front') {
-          onUpdate({ idFrontFile: file, idFrontPreview: preview });
-        } else {
-          onUpdate({ idBackFile: file, idBackPreview: preview });
-        }
-      }
-      stopCamera();
-    }, 'image/jpeg', 0.9);
-  };
-
-  const handleFileUpload = (side: DocumentSide, file: File) => {
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const preview = e.target?.result as string;
-      if (side === 'front') {
-        onUpdate({ idFrontFile: file, idFrontPreview: preview });
-      } else {
-        onUpdate({ idBackFile: file, idBackPreview: preview });
-      }
+    // Mock OCR data extraction
+    const mockOCRData = {
+      extractedName: 'AHMAD BIN ABDULLAH',
+      extractedIC: '900101-14-5678',
+      confidence: 95,
     };
-    reader.readAsDataURL(file);
+
+    if (side === 'front') {
+      onUpdate({
+        frontImage: file,
+        frontPreview: previewUrl,
+        ocrData: mockOCRData,
+      });
+    } else {
+      onUpdate({
+        backImage: file,
+        backPreview: previewUrl,
+      });
+    }
+
+    setSide(false);
   };
 
-  const clearDocument = (side: DocumentSide) => {
-    if (side === 'front') {
-      onUpdate({ idFrontFile: null, idFrontPreview: null });
-    } else {
-      onUpdate({ idBackFile: null, idBackPreview: null });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, side: 'front' | 'back') => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileSelect(file, side);
     }
   };
 
-  // Camera capture modal
-  if (activeCapture) {
+  const renderUploadZone = (
+    side: 'front' | 'back',
+    image: File | null,
+    preview: string | null,
+    isUploading: boolean,
+    inputRef: React.RefObject<HTMLInputElement>
+  ) => {
+    const hasImage = image && preview;
+
     return (
-      <div className="fixed inset-0 bg-black z-50 flex flex-col">
-        {/* Camera View */}
-        <div className="flex-1 relative">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            className="w-full h-full object-cover"
-          />
-          
-          {/* Guide Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[90%] aspect-[1.6/1] border-2 border-white/50 rounded-xl">
-              <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-white rounded-tl-lg" />
-              <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-white rounded-tr-lg" />
-              <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-white rounded-bl-lg" />
-              <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-white rounded-br-lg" />
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="font-medium text-gray-900">
+            MyKad {side === 'front' ? 'Front' : 'Back'}
+          </span>
+          {hasImage && (
+            <button
+              onClick={() => {
+                if (side === 'front') {
+                  onUpdate({ frontImage: null, frontPreview: null, ocrData: undefined });
+                } else {
+                  onUpdate({ backImage: null, backPreview: null });
+                }
+              }}
+              className="text-sm text-gray-500 flex items-center gap-1"
+            >
+              <RotateCcw className="w-4 h-4" /> Retake
+            </button>
+          )}
+        </div>
+
+        {hasImage ? (
+          <div className="relative">
+            <img
+              src={preview}
+              alt={`MyKad ${side}`}
+              className="w-full h-48 object-cover rounded-2xl"
+            />
+            <div className="absolute bottom-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1">
+              <Check className="w-4 h-4" /> Captured
             </div>
           </div>
-
-          {/* Instructions */}
-          <div className="absolute top-8 left-0 right-0 text-center">
-            <span className="bg-black/60 text-white px-4 py-2 rounded-full text-sm">
-              Position your MyKad ({activeCapture === 'front' ? 'FRONT' : 'BACK'}) within the frame
-            </span>
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="bg-black p-6 flex items-center justify-around">
+        ) : (
           <button
-            onClick={stopCamera}
-            className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center"
+            onClick={() => inputRef.current?.click()}
+            disabled={isUploading}
+            className="w-full h-48 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center gap-3 hover:border-gray-400 hover:bg-gray-50 transition-colors"
           >
-            <X className="w-6 h-6 text-white" />
+            {isUploading ? (
+              <>
+                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center animate-pulse">
+                  <Camera className="w-5 h-5 text-gray-400" />
+                </div>
+                <span className="text-gray-500">Processing...</span>
+              </>
+            ) : (
+              <>
+                <div 
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                  style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+                >
+                  <Camera className="w-7 h-7 text-black" />
+                </div>
+                <span className="text-gray-600 font-medium">Tap to capture</span>
+                <span className="text-gray-400 text-sm">or upload a photo</span>
+              </>
+            )}
           </button>
-          
-          <button
-            onClick={capturePhoto}
-            className="w-20 h-20 bg-white rounded-full flex items-center justify-center border-4 border-purple-500"
-          >
-            <div className="w-16 h-16 bg-purple-500 rounded-full" />
-          </button>
-          
-          <div className="w-14 h-14" /> {/* Spacer */}
-        </div>
+        )}
 
-        {/* Hidden canvas for capture */}
-        <canvas ref={canvasRef} className="hidden" />
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          onChange={(e) => handleInputChange(e, side)}
+          className="hidden"
+        />
       </div>
     );
-  }
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-          <FileText className="w-8 h-8 text-white" />
+    <div className="space-y-6 py-4">
+      {/* Instructions */}
+      <div className="bg-gray-50 rounded-2xl p-4">
+        <p className="text-gray-600 text-sm">
+          📸 Take clear photos of your MyKad. Make sure all text is readable.
+        </p>
+      </div>
+
+      {/* Front */}
+      {renderUploadZone(
+        'front',
+        data.frontImage,
+        data.frontPreview,
+        uploadingFront,
+        frontInputRef as React.RefObject<HTMLInputElement>
+      )}
+
+      {/* OCR Results */}
+      {data.ocrData && (
+        <div className="bg-green-50 rounded-2xl p-4 space-y-2">
+          <div className="flex items-center gap-2 text-green-700 font-medium">
+            <Check className="w-5 h-5" />
+            Information extracted
+          </div>
+          <div className="text-sm text-green-800 space-y-1">
+            <p><span className="text-green-600">Name:</span> {data.ocrData.extractedName}</p>
+            <p><span className="text-green-600">IC:</span> {data.ocrData.extractedIC}</p>
+            <p><span className="text-green-600">Confidence:</span> {data.ocrData.confidence}%</p>
+          </div>
         </div>
-        <h3 className="text-gray-900 text-xl font-semibold">Upload MyKad</h3>
-        <p className="text-gray-500 text-sm mt-1">Take clear photos of your IC (front & back)</p>
-      </div>
+      )}
 
-      {/* Tips */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-        <h4 className="text-blue-900 font-medium text-sm mb-2">📸 Tips for a clear photo:</h4>
-        <ul className="text-blue-700 text-xs space-y-1">
-          <li>• Good lighting, avoid glare</li>
-          <li>• Place on flat, dark surface</li>
-          <li>• All corners visible</li>
-          <li>• Text clearly readable</li>
-        </ul>
-      </div>
+      {/* Back */}
+      {renderUploadZone(
+        'back',
+        data.backImage,
+        data.backPreview,
+        uploadingBack,
+        backInputRef as React.RefObject<HTMLInputElement>
+      )}
 
-      {/* Document Cards */}
-      <div className="space-y-4">
-        {/* Front of IC */}
-        <DocumentCard
-          title="MyKad Front"
-          description="Photo side with your face"
-          preview={data.idFrontPreview}
-          onCapture={() => startCamera('front')}
-          onUpload={() => fileInputFrontRef.current?.click()}
-          onClear={() => clearDocument('front')}
-        />
-        <input
-          ref={fileInputFrontRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleFileUpload('front', file);
-          }}
-        />
-
-        {/* Back of IC */}
-        <DocumentCard
-          title="MyKad Back"
-          description="Address side"
-          preview={data.idBackPreview}
-          onCapture={() => startCamera('back')}
-          onUpload={() => fileInputBackRef.current?.click()}
-          onClear={() => clearDocument('back')}
-        />
-        <input
-          ref={fileInputBackRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleFileUpload('back', file);
-          }}
-        />
-      </div>
-
-      {/* Status */}
-      <div className="flex items-center justify-center gap-6 text-sm">
-        <div className={`flex items-center gap-2 ${data.idFrontFile ? 'text-green-600' : 'text-gray-400'}`}>
-          {data.idFrontFile ? <Check className="w-4 h-4" /> : <div className="w-4 h-4 border-2 border-current rounded-full" />}
-          Front
-        </div>
-        <div className={`flex items-center gap-2 ${data.idBackFile ? 'text-green-600' : 'text-gray-400'}`}>
-          {data.idBackFile ? <Check className="w-4 h-4" /> : <div className="w-4 h-4 border-2 border-current rounded-full" />}
-          Back
-        </div>
-      </div>
-
-      {/* Error Display */}
+      {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-          <span>{error}</span>
+        <div className="bg-red-50 rounded-2xl p-4 text-red-700 text-sm flex items-start gap-2">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          {error}
         </div>
       )}
     </div>
   );
 }
-
-// Document Card Component
-interface DocumentCardProps {
-  title: string;
-  description: string;
-  preview: string | null;
-  onCapture: () => void;
-  onUpload: () => void;
-  onClear: () => void;
-}
-
-function DocumentCard({ title, description, preview, onCapture, onUpload, onClear }: DocumentCardProps) {
-  if (preview) {
-    return (
-      <div className="relative">
-        <div className="aspect-[1.6/1] rounded-xl overflow-hidden border-2 border-green-500 bg-gray-100">
-          <img src={preview} alt={title} className="w-full h-full object-cover" />
-        </div>
-        <div className="absolute top-2 right-2 flex gap-2">
-          <button
-            onClick={onClear}
-            className="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="absolute bottom-2 left-2 bg-green-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1">
-          <Check className="w-3 h-3" />
-          {title}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50">
-      <div className="text-center mb-4">
-        <h4 className="text-gray-900 font-medium">{title}</h4>
-        <p className="text-gray-500 text-sm">{description}</p>
-      </div>
-      <div className="flex gap-3">
-        <button
-          onClick={onCapture}
-          className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-xl flex items-center justify-center gap-2"
-        >
-          <Camera className="w-5 h-5" />
-          Camera
-        </button>
-        <button
-          onClick={onUpload}
-          className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-100"
-        >
-          <Upload className="w-5 h-5" />
-          Upload
-        </button>
-      </div>
-    </div>
-  );
-}
-

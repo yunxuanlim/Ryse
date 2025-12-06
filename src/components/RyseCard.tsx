@@ -1,7 +1,9 @@
 // ============================================
-// Ryse Card Component
-// Physical debit card design like Cash App
+// RYSE Card Component - Cash App Inspired
+// Neon green card with emoji doodles and float animation
 // ============================================
+
+import { useState } from 'react';
 
 interface RyseCardProps {
   userName?: string;
@@ -9,7 +11,10 @@ interface RyseCardProps {
   variant?: 'neon' | 'black' | 'gradient';
   size?: 'small' | 'medium' | 'large';
   showDetails?: boolean;
+  showBadge?: boolean;
+  badgeText?: string;
   onClick?: () => void;
+  animate?: boolean;
 }
 
 export function RyseCard({ 
@@ -18,13 +23,16 @@ export function RyseCard({
   variant = 'neon',
   size = 'medium',
   showDetails = false,
-  onClick
+  showBadge = false,
+  badgeText = 'Shipped',
+  onClick,
+  animate = false
 }: RyseCardProps) {
 
-  const sizeStyles: Record<string, React.CSSProperties> = {
-    small: { width: '160px', height: '100px' },
-    medium: { width: '280px', height: '175px' },
-    large: { width: '320px', height: '200px' }
+  const sizeStyles: Record<string, { width: string; height: string; padding: string }> = {
+    small: { width: '180px', height: '113px', padding: '12px' },
+    medium: { width: '280px', height: '175px', padding: '20px' },
+    large: { width: '320px', height: '200px', padding: '24px' }
   };
 
   const variantColors = {
@@ -34,19 +42,41 @@ export function RyseCard({
   };
 
   const colors = variantColors[variant];
-  const isGradient = variant === 'gradient';
+  const currentSize = sizeStyles[size];
+
+  // Emoji decorations for the neon card
+  const emojis = ['😊', '💰', '⚡', '🎯', '✨', '💎'];
 
   return (
     <div 
-      className="cursor-pointer relative"
-      style={sizeStyles[size]}
+      className={`relative cursor-pointer ${animate ? 'animate-float' : ''}`}
+      style={{ width: currentSize.width, height: currentSize.height }}
       onClick={onClick}
     >
+      {/* Decorative elements around card */}
+      {variant === 'neon' && (
+        <>
+          <div className="absolute -top-3 -right-3 text-xl animate-pulse">✨</div>
+          <div className="absolute -bottom-2 -left-3 text-lg animate-pulse" style={{ animationDelay: '0.5s' }}>⭐</div>
+          <div className="absolute top-1/2 -right-4 text-sm animate-pulse" style={{ animationDelay: '0.3s' }}>✨</div>
+        </>
+      )}
+
+      {/* Badge */}
+      {showBadge && (
+        <div 
+          className="absolute -top-2 left-4 px-3 py-1 bg-black text-white text-xs font-medium rounded-full flex items-center gap-1 z-10"
+        >
+          <span>📦</span> {badgeText}
+        </div>
+      )}
+
       {/* Card Face */}
       <div 
-        className="absolute inset-0 rounded-2xl p-5 flex flex-col justify-between overflow-hidden"
+        className="absolute inset-0 rounded-2xl flex flex-col justify-between overflow-hidden"
         style={{ 
           background: colors.bg,
+          padding: currentSize.padding,
           boxShadow: variant === 'neon' 
             ? '0 20px 60px rgba(185, 255, 0, 0.3)' 
             : variant === 'black'
@@ -54,22 +84,41 @@ export function RyseCard({
               : '0 20px 60px rgba(124, 58, 237, 0.3)'
         }}
       >
+        {/* Emoji Doodles (only for neon variant) */}
+        {variant === 'neon' && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30">
+            {emojis.map((emoji, i) => (
+              <span 
+                key={i}
+                className="absolute text-lg"
+                style={{
+                  top: `${20 + (i * 15) % 60}%`,
+                  left: `${10 + (i * 20) % 80}%`,
+                  transform: `rotate(${-15 + i * 10}deg)`,
+                }}
+              >
+                {emoji}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Accent Pattern */}
         {variant === 'neon' && (
           <div 
-            className="absolute bottom-0 right-0 w-32 h-32 rounded-tl-[80px] opacity-60"
+            className="absolute bottom-0 right-0 w-24 h-24 rounded-tl-[60px] opacity-50"
             style={{ background: colors.accent }}
           />
         )}
 
-        {/* Chip & Logo */}
+        {/* Top Row - Chip & Logo */}
         <div className="flex items-start justify-between relative z-10">
           {/* EMV Chip */}
           <div 
-            className="w-10 h-7 rounded-md flex items-center justify-center"
+            className="w-8 h-6 rounded-md flex items-center justify-center"
             style={{ background: variant === 'neon' ? '#d1d5db' : variant === 'black' ? '#4b5563' : 'rgba(255,255,255,0.3)' }}
           >
-            <div className="w-6 h-4 border border-gray-400 rounded-sm opacity-60 grid grid-cols-3 gap-px p-0.5">
+            <div className="w-5 h-3 border border-gray-400 rounded-sm opacity-60 grid grid-cols-3 gap-px p-0.5">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="bg-gray-400 opacity-50 rounded-sm" />
               ))}
@@ -78,14 +127,14 @@ export function RyseCard({
           
           {/* RYSE Logo */}
           <div 
-            className="font-bold text-base tracking-widest"
+            className="font-bold text-sm tracking-widest"
             style={{ color: colors.text }}
           >
             RYSE
           </div>
         </div>
 
-        {/* Card Number */}
+        {/* Card Number (if showing details) */}
         {showDetails && size !== 'small' && (
           <div 
             className="font-mono text-sm tracking-wider opacity-80 relative z-10"
@@ -118,6 +167,21 @@ export function RyseCard({
           </svg>
         </div>
       </div>
+
+      {/* Float animation styles */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { 
+            transform: translateY(0) rotate(-2deg); 
+          }
+          50% { 
+            transform: translateY(-10px) rotate(2deg); 
+          }
+        }
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
@@ -154,7 +218,7 @@ export function RyseCardPreview({
       }`}
     >
       <div className="flex items-center gap-4">
-        <div className="w-24 h-14 flex-shrink-0">
+        <div className="flex-shrink-0">
           <RyseCard variant={variant} size="small" />
         </div>
         <div className="flex-1 text-left">
@@ -173,3 +237,4 @@ export function RyseCardPreview({
   );
 }
 
+export default RyseCard;
