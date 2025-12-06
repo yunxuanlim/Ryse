@@ -55,6 +55,7 @@ export function useAuth(): UseAuthReturn {
     if (authState.isAuthenticated) {
       refreshUser();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const setLoading = useCallback((isLoading: boolean) => {

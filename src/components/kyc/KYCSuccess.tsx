@@ -36,6 +36,7 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
     const duration = 1500;
     const startTime = Date.now();
     const startScore = 300;
+    let animationFrameId: number;
     
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -43,10 +44,16 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
       const easeOut = 1 - Math.pow(1 - progress, 3);
       const currentScore = Math.round(startScore + (finalScore - startScore) * easeOut);
       setAnimatedScore(currentScore);
-      if (progress < 1) requestAnimationFrame(animate);
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
     };
     
-    requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animate);
+    
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [showScore, finalScore]);
 
   const getTierInfo = (tier: RyScoreTier) => {

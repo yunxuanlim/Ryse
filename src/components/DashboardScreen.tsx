@@ -20,7 +20,6 @@ import {
   AlertCircle,
   Settings,
   Wallet,
-  QrCode,
   Plus
 } from 'lucide-react';
 import { BottomNav } from './BottomNav';

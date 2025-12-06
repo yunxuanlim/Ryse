@@ -24,6 +24,7 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
     if (user?.id) {
       kyc.loadProgress(user.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const steps = [
@@ -37,8 +38,9 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
 
   const handleNext = async () => {
     if (!user?.id) return;
+    const currentStepBeforeSubmit = kyc.currentStep;
     const success = await kyc.submitCurrentStep(user.id);
-    if (success && kyc.currentStep === 4) {
+    if (success && currentStepBeforeSubmit === 4) {
       setShowSuccess(true);
     }
   };

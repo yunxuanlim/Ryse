@@ -36,17 +36,6 @@ export default function App() {
   // Auth hook for managing authentication state
   const auth = useAuth();
 
-  // Redirect to KYC if user is logged in but KYC not complete
-  useEffect(() => {
-    if (auth.isAuthenticated && auth.user) {
-      if (auth.user.kycStatus === 'not_started' || auth.user.kycStatus === 'in_progress') {
-        // User needs to complete KYC - but only redirect if on dashboard
-        if (currentScreen === 'dashboard') {
-          // Show KYC banner instead of force redirect (better UX)
-        }
-      }
-    }
-  }, [auth.isAuthenticated, auth.user, currentScreen]);
 
   const handleLogin = () => {
     // For demo mode - quick login
