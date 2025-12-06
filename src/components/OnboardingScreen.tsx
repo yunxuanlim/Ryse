@@ -1,6 +1,6 @@
 // ============================================
-// Onboarding Screen - Cash App Inspired
-// Clean, minimal with green accent icons
+// Onboarding Screen - OBSIDIAN Neon-Noir Design
+// Deep black background, neon green accents
 // ============================================
 
 import { useState } from 'react';
@@ -41,12 +41,12 @@ export function OnboardingScreen({ onLogin, onNavigateToLogin }: OnboardingScree
   const Icon = currentStep.icon;
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-obsidian-100">
       {/* Skip Button - Top Right */}
       <div className="flex justify-end px-6 pt-4">
         <button
           onClick={onLogin}
-          className="text-gray-500 text-sm font-medium hover:text-gray-700 transition-colors"
+          className="text-white-low text-sm font-medium hover:text-white-high transition-colors"
         >
           Skip
         </button>
@@ -54,27 +54,27 @@ export function OnboardingScreen({ onLogin, onNavigateToLogin }: OnboardingScree
 
       {/* Content Area */}
       <div className="flex-1 flex flex-col items-center justify-center px-8">
-        {/* Icon with Green Circle */}
+        {/* Icon with Neon Circle */}
         <div className="mb-8 relative">
           <div 
-            className="w-20 h-20 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+            className="w-20 h-20 rounded-full flex items-center justify-center glow-neon-md"
+            style={{ backgroundColor: 'var(--neon-primary)' }}
           >
-            <Icon className="w-10 h-10 text-black" strokeWidth={1.5} />
+            <Icon className="w-10 h-10 text-obsidian-100" strokeWidth={1.5} />
           </div>
           {/* Decorative sparkles */}
-          <div className="absolute -top-2 -right-2 text-2xl">✨</div>
-          <div className="absolute -bottom-1 -left-2 text-xl">⭐</div>
+          <div className="absolute -top-2 -right-2 text-2xl animate-particle-float">✨</div>
+          <div className="absolute -bottom-1 -left-2 text-xl animate-particle-float" style={{ animationDelay: '0.5s' }}>⭐</div>
         </div>
 
         {/* Title & Description */}
-        <h1 className="text-3xl font-bold text-gray-900 text-center mb-3 tracking-tight">
+        <h1 className="text-3xl font-bold text-white-high text-center mb-3 tracking-tight">
           {currentStep.title}
         </h1>
-        <p className="text-gray-600 text-center mb-3 text-lg font-medium">
+        <p className="text-neon text-center mb-3 text-lg font-medium">
           {currentStep.subtitle}
         </p>
-        <p className="text-gray-400 text-center max-w-sm text-base leading-relaxed">
+        <p className="text-white-low text-center max-w-sm text-base leading-relaxed">
           {currentStep.description}
         </p>
       </div>
@@ -96,6 +96,7 @@ export function OnboardingScreen({ onLogin, onNavigateToLogin }: OnboardingScree
             onClick={() => setStep(step + 1)}
             className="w-full"
             size="lg"
+            variant="neon"
           >
             Next
           </PillButton>
@@ -105,15 +106,16 @@ export function OnboardingScreen({ onLogin, onNavigateToLogin }: OnboardingScree
               onClick={onNavigateToLogin || onLogin}
               className="w-full"
               size="lg"
+              variant="neon"
               rightIcon={<ArrowRight className="w-5 h-5" />}
             >
               Get Started
             </PillButton>
             <button
               onClick={onLogin}
-              className="w-full py-4 text-gray-600 font-medium text-base hover:text-gray-900 transition-colors"
+              className="w-full py-4 text-white-low font-medium text-base hover:text-white-high transition-colors"
             >
-              Already have an account? <span className="text-black font-semibold">Log In</span>
+              Already have an account? <span className="text-neon font-semibold">Log In</span>
             </button>
           </div>
         )}

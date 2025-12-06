@@ -150,12 +150,12 @@ The card needs to feel precious. We apply Gyroscopic Parallax to give the digita
 
 To achieve the requisite "sleekness," standard rendering is insufficient. The app will utilize a high-performance graphics layer.
 
-| Component | Technology Recommendation | Rationale |
-|-----------|--------------------------|-----------|
-| Core UI | Flutter or React Native (Reanimated) | Cross-platform consistency with native performance (60fps+). |
-| 3D Elements | Filament (Android) / Metal (iOS) or Three.js (Web) | Required for the gyroscope-responsive Welcome wireframe and Parallax Card. |
-| Animations | Lottie (Vector) + Rive (Interactive) | Lottie for static animations; Rive for state-machines (e.g., the AI Orb changing states). |
-| Haptics | CoreHaptics (iOS) / Vibrator API (Android) | Essential for the "Tactile Rail" credit slider. |
+| Component   | Technology Recommendation                          | Rationale                                                                                 |
+| ----------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Core UI     | Flutter or React Native (Reanimated)               | Cross-platform consistency with native performance (60fps+).                              |
+| 3D Elements | Filament (Android) / Metal (iOS) or Three.js (Web) | Required for the gyroscope-responsive Welcome wireframe and Parallax Card.                |
+| Animations  | Lottie (Vector) + Rive (Interactive)               | Lottie for static animations; Rive for state-machines (e.g., the AI Orb changing states). |
+| Haptics     | CoreHaptics (iOS) / Vibrator API (Android)         | Essential for the "Tactile Rail" credit slider.                                           |
 
 ### 4.2 Animation Physics & Motion Guidelines
 
@@ -270,16 +270,16 @@ The "Mutual Aid" feature is transformed into a network graph.
 
 To ensure consistency and accessibility, the strict palette is codified into a token system.
 
-| Token Name | Hex Value | Usage Scope | Accessibility Note |
-|------------|-----------|-------------|-------------------|
-| color-obsidian-100 | #060606 | Main Background | Non-pure black prevents OLED smear. |
-| color-obsidian-200 | #121212 | Surface / Cards | Elevates content from background. |
-| color-neon-primary | #39FF14 | Primary Actions / Key Data | Use with Bold weight for text. |
-| color-neon-dim | #1B7A0F | Inactive States / Backgrounds | Low contrast; purely decorative. |
-| color-white-high | #FFFFFF | Headings / Critical Values | 100% Opacity. |
-| color-white-med | rgba(255,255,255,0.87) | Body Text / Labels | Reduces eye strain. |
-| color-white-low | rgba(255,255,255,0.60) | Secondary / Metadata | Non-critical info. |
-| color-alert-pattern | striped(#FFF, #000) | Warnings / Errors | Replaces Red for alerts. |
+| Token Name          | Hex Value              | Usage Scope                   | Accessibility Note                  |
+| ------------------- | ---------------------- | ----------------------------- | ----------------------------------- |
+| color-obsidian-100  | #060606                | Main Background               | Non-pure black prevents OLED smear. |
+| color-obsidian-200  | #121212                | Surface / Cards               | Elevates content from background.   |
+| color-neon-primary  | #39FF14                | Primary Actions / Key Data    | Use with Bold weight for text.      |
+| color-neon-dim      | #1B7A0F                | Inactive States / Backgrounds | Low contrast; purely decorative.    |
+| color-white-high    | #FFFFFF                | Headings / Critical Values    | 100% Opacity.                       |
+| color-white-med     | rgba(255,255,255,0.87) | Body Text / Labels            | Reduces eye strain.                 |
+| color-white-low     | rgba(255,255,255,0.60) | Secondary / Metadata          | Non-critical info.                  |
+| color-alert-pattern | striped(#FFF, #000)    | Warnings / Errors             | Replaces Red for alerts.            |
 
 ### 9.2 Typography & Hierarchy
 
@@ -338,6 +338,7 @@ The "Glassmorphism" effect used in the navigation dock and digital card requires
 
 - **Technique**: We will use a "Backdrop Filter" with a saturation boost.
 - **Code Concept**:
+
 ```css
 .glass-panel {
   background: rgba(6, 6, 6, 0.65);
@@ -396,4 +397,3 @@ The "Talk to Ryse" integration is the biggest structural change.
 **Last Updated**: December 2025  
 **Status**: Active  
 **Project Code**: Obsidian
-

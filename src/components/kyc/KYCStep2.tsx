@@ -1,11 +1,22 @@
 // ============================================
 // KYC Step 2: MyKad Document Upload
-// Cash App Inspired - Clean upload interface
+// Project Obsidian - Neon-Noir Dark Theme
 // ============================================
 
 import { useState, useRef } from 'react';
-import { Camera, Upload, Check, RotateCcw, AlertCircle } from 'lucide-react';
+import { Camera, Check, RotateCcw, AlertCircle } from 'lucide-react';
 import { KYCStep2Data } from '../../types';
+
+// Obsidian Theme Colors
+const COLORS = {
+  obsidian100: '#060606',
+  obsidian200: '#121212',
+  neonPrimary: '#39FF14',
+  neonDim: '#1B7A0F',
+  whiteHigh: '#FFFFFF',
+  whiteMedium: 'rgba(255,255,255,0.87)',
+  whiteLow: 'rgba(255,255,255,0.60)',
+};
 
 interface KYCStep2Props {
   data: KYCStep2Data;
@@ -74,7 +85,7 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="font-medium text-gray-900">
+          <span className="font-medium" style={{ color: COLORS.whiteHigh }}>
             MyKad {side === 'front' ? 'Front' : 'Back'}
           </span>
           {hasImage && (
@@ -86,7 +97,8 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
                   onUpdate({ backImage: null, backPreview: null });
                 }
               }}
-              className="text-sm text-gray-500 flex items-center gap-1"
+              className="text-sm flex items-center gap-1 transition-colors"
+              style={{ color: COLORS.whiteLow }}
             >
               <RotateCcw className="w-4 h-4" /> Retake
             </button>
@@ -99,8 +111,12 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
               src={preview}
               alt={`MyKad ${side}`}
               className="w-full h-48 object-cover rounded-2xl"
+              style={{ border: `2px solid ${COLORS.neonPrimary}` }}
             />
-            <div className="absolute bottom-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1">
+            <div 
+              className="absolute bottom-3 right-3 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+              style={{ backgroundColor: COLORS.neonPrimary, color: COLORS.obsidian100 }}
+            >
               <Check className="w-4 h-4" /> Captured
             </div>
           </div>
@@ -108,25 +124,32 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
           <button
             onClick={() => inputRef.current?.click()}
             disabled={isUploading}
-            className="w-full h-48 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center gap-3 hover:border-gray-400 hover:bg-gray-50 transition-colors"
+            className="w-full h-48 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center gap-3 transition-all"
+            style={{ 
+              borderColor: COLORS.neonDim,
+              backgroundColor: COLORS.obsidian200,
+            }}
           >
             {isUploading ? (
               <>
-                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center animate-pulse">
-                  <Camera className="w-5 h-5 text-gray-400" />
+                <div 
+                  className="w-10 h-10 rounded-full flex items-center justify-center animate-pulse"
+                  style={{ backgroundColor: COLORS.neonDim }}
+                >
+                  <Camera className="w-5 h-5" style={{ color: COLORS.neonPrimary }} />
                 </div>
-                <span className="text-gray-500">Processing...</span>
+                <span style={{ color: COLORS.whiteLow }}>Processing...</span>
               </>
             ) : (
               <>
                 <div 
                   className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                  style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+                  style={{ backgroundColor: COLORS.neonPrimary }}
                 >
-                  <Camera className="w-7 h-7 text-black" />
+                  <Camera className="w-7 h-7" style={{ color: COLORS.obsidian100 }} />
                 </div>
-                <span className="text-gray-600 font-medium">Tap to capture</span>
-                <span className="text-gray-400 text-sm">or upload a photo</span>
+                <span className="font-medium" style={{ color: COLORS.whiteMedium }}>Tap to capture</span>
+                <span className="text-sm" style={{ color: COLORS.whiteLow }}>or upload a photo</span>
               </>
             )}
           </button>
@@ -147,8 +170,11 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
   return (
     <div className="space-y-6 py-4">
       {/* Instructions */}
-      <div className="bg-gray-50 rounded-2xl p-4">
-        <p className="text-gray-600 text-sm">
+      <div 
+        className="rounded-2xl p-4"
+        style={{ backgroundColor: COLORS.obsidian200 }}
+      >
+        <p className="text-sm" style={{ color: COLORS.whiteMedium }}>
           📸 Take clear photos of your MyKad. Make sure all text is readable.
         </p>
       </div>
@@ -164,15 +190,21 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
 
       {/* OCR Results */}
       {data.ocrData && (
-        <div className="bg-green-50 rounded-2xl p-4 space-y-2">
-          <div className="flex items-center gap-2 text-green-700 font-medium">
+        <div 
+          className="rounded-2xl p-4 space-y-2"
+          style={{ 
+            backgroundColor: `${COLORS.neonPrimary}15`,
+            border: `1px solid ${COLORS.neonDim}`,
+          }}
+        >
+          <div className="flex items-center gap-2 font-medium" style={{ color: COLORS.neonPrimary }}>
             <Check className="w-5 h-5" />
             Information extracted
           </div>
-          <div className="text-sm text-green-800 space-y-1">
-            <p><span className="text-green-600">Name:</span> {data.ocrData.extractedName}</p>
-            <p><span className="text-green-600">IC:</span> {data.ocrData.extractedIC}</p>
-            <p><span className="text-green-600">Confidence:</span> {data.ocrData.confidence}%</p>
+          <div className="text-sm space-y-1" style={{ color: COLORS.whiteMedium }}>
+            <p><span style={{ color: COLORS.whiteLow }}>Name:</span> {data.ocrData.extractedName}</p>
+            <p><span style={{ color: COLORS.whiteLow }}>IC:</span> {data.ocrData.extractedIC}</p>
+            <p><span style={{ color: COLORS.whiteLow }}>Confidence:</span> {data.ocrData.confidence}%</p>
           </div>
         </div>
       )}
@@ -188,7 +220,14 @@ export function KYCStep2({ data, onUpdate, error }: KYCStep2Props) {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 rounded-2xl p-4 text-red-700 text-sm flex items-start gap-2">
+        <div 
+          className="rounded-2xl p-4 text-sm flex items-start gap-2"
+          style={{
+            background: 'repeating-linear-gradient(45deg, #060606, #060606 10px, #1a1a1a 10px, #1a1a1a 20px)',
+            color: COLORS.whiteHigh,
+            border: '1px solid rgba(255,255,255,0.2)',
+          }}
+        >
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           {error}
         </div>

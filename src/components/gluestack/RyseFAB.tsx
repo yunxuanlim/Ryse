@@ -1,15 +1,17 @@
 // ============================================
-// RyseFAB - Floating Action Button for Voice
-// Gradient green with pulse animation
+// RyseFAB - OBSIDIAN Neon-Noir Design
+// Neon green FAB with pulse animation
 // ============================================
 
 import { useState } from 'react';
 import { Mic } from 'lucide-react';
 
-// Brand Colors
+// Obsidian Color Palette
 const COLORS = {
-  gradientStart: '#00D632',  // Green Start
-  gradientEnd: '#00B32C',    // Green End
+  neon: '#39FF14',
+  neonBright: '#4AFF26',
+  neonDim: '#1B7A0F',
+  obsidian: '#060606',
   white: '#FFFFFF',
 };
 
@@ -35,12 +37,10 @@ export function RyseFAB({
     setIsPressed(true);
     setIsPulsing(true);
     
-    // Trigger pulse animation
     setTimeout(() => {
       setIsPressed(false);
     }, 150);
     
-    // Stop pulsing after animation
     setTimeout(() => {
       setIsPulsing(false);
     }, 600);
@@ -57,17 +57,17 @@ export function RyseFAB({
         onMouseUp={() => setIsPressed(false)}
         onMouseLeave={() => setIsPressed(false)}
         className={`
-          relative rounded-full shadow-2xl
+          relative rounded-full
           flex items-center justify-center
-          transition-all duration-150 ease-out
-          focus:outline-none focus:ring-4 focus:ring-green-300
+          transition-all duration-150 ease-fintech
+          focus:outline-none focus-neon
           ${isPressed ? 'scale-95' : 'hover:scale-105'}
         `}
         style={{
           width: size,
           height: size,
-          background: `linear-gradient(135deg, ${COLORS.gradientStart} 0%, ${COLORS.gradientEnd} 100%)`,
-          boxShadow: `0 8px 32px ${COLORS.gradientStart}50, 0 4px 16px rgba(0,0,0,0.15)`,
+          background: COLORS.neon,
+          boxShadow: `0 0 40px ${COLORS.neon}80, 0 8px 32px rgba(0,0,0,0.5)`,
         }}
         aria-label={label}
       >
@@ -77,14 +77,14 @@ export function RyseFAB({
             <span 
               className="absolute inset-0 rounded-full animate-ping"
               style={{ 
-                backgroundColor: COLORS.gradientStart,
+                backgroundColor: COLORS.neon,
                 opacity: 0.4,
               }}
             />
             <span 
               className="absolute inset-0 rounded-full animate-pulse-ring"
               style={{ 
-                backgroundColor: COLORS.gradientStart,
+                backgroundColor: COLORS.neon,
                 opacity: 0.2,
               }}
             />
@@ -97,14 +97,14 @@ export function RyseFAB({
           style={{ 
             width: size * 0.45, 
             height: size * 0.45,
-            color: COLORS.white,
+            color: COLORS.obsidian,
           }}
           strokeWidth={2.5}
         />
         
         {/* Subtle inner glow */}
         <div 
-          className="absolute inset-2 rounded-full opacity-20"
+          className="absolute inset-2 rounded-full opacity-30"
           style={{
             background: `radial-gradient(circle at 30% 30%, white 0%, transparent 70%)`,
           }}
@@ -113,31 +113,10 @@ export function RyseFAB({
       
       {/* Label */}
       {showLabel && (
-        <span className="mt-2 text-xs font-semibold text-gray-600">
+        <span className="mt-2 text-xs font-semibold text-white-low">
           {label}
         </span>
       )}
-      
-      {/* Animation Styles */}
-      <style>{`
-        @keyframes pulse-ring {
-          0% {
-            transform: scale(1);
-            opacity: 0.4;
-          }
-          50% {
-            transform: scale(1.3);
-            opacity: 0.1;
-          }
-          100% {
-            transform: scale(1.5);
-            opacity: 0;
-          }
-        }
-        .animate-pulse-ring {
-          animation: pulse-ring 0.6s ease-out forwards;
-        }
-      `}</style>
     </div>
   );
 }
@@ -153,18 +132,18 @@ export function RyseFABMini({
   return (
     <button
       onClick={onPress}
-      className="rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+      className="rounded-full flex items-center justify-center transition-all ease-fintech hover:scale-105 active:scale-95 glow-neon-md"
       style={{
         width: size,
         height: size,
-        background: `linear-gradient(135deg, ${COLORS.gradientStart} 0%, ${COLORS.gradientEnd} 100%)`,
+        background: COLORS.neon,
       }}
     >
       <Mic 
         style={{ 
           width: size * 0.45, 
           height: size * 0.45,
-          color: COLORS.white,
+          color: COLORS.obsidian,
         }}
         strokeWidth={2.5}
       />
@@ -173,4 +152,3 @@ export function RyseFABMini({
 }
 
 export default RyseFAB;
-

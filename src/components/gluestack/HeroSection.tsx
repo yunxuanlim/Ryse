@@ -1,24 +1,19 @@
 // ============================================
-// HeroSection Component - RYSE Home Screen
-// Gradient header with floating balance card
+// HeroSection Component - Project Obsidian
+// Neon-Noir Dark Theme with glassmorphism
 // ============================================
 
 import { TrendingUp, ChevronRight } from 'lucide-react';
 
-// Brand Colors
+// Obsidian Theme Colors
 const COLORS = {
-  gradientStart: '#0041C2',  // Deep Blue
-  gradientEnd: '#0052FF',    // Bright Blue
-  white: '#FFFFFF',
-  green: '#00D632',          // Earnings Green
-  greenLight: '#00D63220',
-  gray: {
-    50: '#F9FAFB',
-    100: '#F3F4F6',
-    400: '#9CA3AF',
-    500: '#6B7280',
-    900: '#111827',
-  },
+  obsidian100: '#060606',
+  obsidian200: '#121212',
+  neonPrimary: '#39FF14',
+  neonDim: '#1B7A0F',
+  whiteHigh: '#FFFFFF',
+  whiteMedium: 'rgba(255,255,255,0.87)',
+  whiteLow: 'rgba(255,255,255,0.60)',
 };
 
 interface HeroSectionProps {
@@ -62,21 +57,30 @@ export function HeroSection({
 
   return (
     <div className="relative">
-      {/* Gradient Background */}
+      {/* Gradient Background - Obsidian with neon accent */}
       <div 
         className="pt-6 pb-20 px-6"
         style={{
-          background: `linear-gradient(135deg, ${COLORS.gradientStart} 0%, ${COLORS.gradientEnd} 100%)`,
+          background: `linear-gradient(135deg, ${COLORS.obsidian100} 0%, ${COLORS.obsidian200} 100%)`,
           borderBottomLeftRadius: '30px',
           borderBottomRightRadius: '30px',
         }}
       >
+        {/* Neon Accent Line */}
+        <div 
+          className="absolute top-0 left-0 right-0 h-1"
+          style={{ 
+            background: `linear-gradient(90deg, transparent, ${COLORS.neonPrimary}, transparent)`,
+            boxShadow: `0 0 20px ${COLORS.neonPrimary}`,
+          }}
+        />
+
         {/* Top Row - Greeting & RyScore Badge */}
         <div className="flex items-center justify-between mb-6">
           {/* Greeting */}
           <div>
-            <p className="text-white/70 text-sm mb-1">Welcome back</p>
-            <h1 className="text-white text-2xl font-bold">
+            <p className="text-sm mb-1" style={{ color: COLORS.whiteLow }}>Welcome back</p>
+            <h1 className="text-2xl font-bold" style={{ color: COLORS.whiteHigh }}>
               Hello, {firstName} 👋
             </h1>
           </div>
@@ -84,31 +88,47 @@ export function HeroSection({
           {/* RyScore Pill Badge */}
           <button
             onClick={onRyScorePress}
-            className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-shadow"
+            className="flex items-center gap-2 px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all"
+            style={{ 
+              backgroundColor: COLORS.obsidian200,
+              border: `1px solid ${COLORS.neonDim}`,
+            }}
           >
             <span className="text-sm">{tier.emoji}</span>
             <span 
               className="font-semibold text-sm"
-              style={{ color: COLORS.gradientEnd }}
+              style={{ color: COLORS.neonPrimary }}
             >
               RyScore {ryScore}
             </span>
             <ChevronRight 
               className="w-4 h-4" 
-              style={{ color: COLORS.gradientEnd }}
+              style={{ color: COLORS.neonPrimary }}
             />
           </button>
         </div>
 
         {/* Quick Stats Row */}
         <div className="flex gap-4">
-          <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-            <p className="text-white/70 text-xs mb-1">Active Platforms</p>
-            <p className="text-white font-bold text-lg">3</p>
+          <div 
+            className="flex-1 backdrop-blur-sm rounded-2xl p-4"
+            style={{ 
+              backgroundColor: `${COLORS.neonDim}20`,
+              border: `1px solid ${COLORS.neonDim}40`,
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: COLORS.whiteLow }}>Active Platforms</p>
+            <p className="font-bold text-lg" style={{ color: COLORS.whiteHigh }}>3</p>
           </div>
-          <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-            <p className="text-white/70 text-xs mb-1">This Month</p>
-            <p className="text-white font-bold text-lg">RM 4,850</p>
+          <div 
+            className="flex-1 backdrop-blur-sm rounded-2xl p-4"
+            style={{ 
+              backgroundColor: `${COLORS.neonDim}20`,
+              border: `1px solid ${COLORS.neonDim}40`,
+            }}
+          >
+            <p className="text-xs mb-1" style={{ color: COLORS.whiteLow }}>This Month</p>
+            <p className="font-bold text-lg" style={{ color: COLORS.neonPrimary }}>RM 4,850</p>
           </div>
         </div>
       </div>
@@ -117,9 +137,11 @@ export function HeroSection({
       <div className="px-6 -mt-10 relative z-10">
         <button
           onClick={onBalancePress}
-          className="w-full bg-white rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all text-left"
+          className="w-full rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all text-left"
           style={{
-            boxShadow: '0 10px 40px rgba(0, 65, 194, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05)',
+            backgroundColor: COLORS.obsidian200,
+            border: `1px solid ${COLORS.neonDim}`,
+            boxShadow: `0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px ${COLORS.neonPrimary}10`,
           }}
         >
           {/* Card Header */}
@@ -127,25 +149,25 @@ export function HeroSection({
             <div className="flex items-center gap-3">
               <div 
                 className="w-10 h-10 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: COLORS.greenLight }}
+                style={{ backgroundColor: `${COLORS.neonPrimary}20` }}
               >
-                <TrendingUp className="w-5 h-5" style={{ color: COLORS.green }} />
+                <TrendingUp className="w-5 h-5" style={{ color: COLORS.neonPrimary }} />
               </div>
               <div>
-                <p className="text-gray-500 text-sm">Total Earnings</p>
-                <p className="text-xs text-gray-400">{trendPeriod}</p>
+                <p className="text-sm" style={{ color: COLORS.whiteLow }}>Total Earnings</p>
+                <p className="text-xs" style={{ color: COLORS.whiteLow }}>{trendPeriod}</p>
               </div>
             </div>
             
             {/* Trend Badge */}
             <div 
               className="flex items-center gap-1 px-3 py-1.5 rounded-full"
-              style={{ backgroundColor: COLORS.greenLight }}
+              style={{ backgroundColor: `${COLORS.neonPrimary}20` }}
             >
-              <TrendingUp className="w-4 h-4" style={{ color: COLORS.green }} />
+              <TrendingUp className="w-4 h-4" style={{ color: COLORS.neonPrimary }} />
               <span 
                 className="text-sm font-semibold"
-                style={{ color: COLORS.green }}
+                style={{ color: COLORS.neonPrimary }}
               >
                 +{earningsTrend}%
               </span>
@@ -156,28 +178,34 @@ export function HeroSection({
           <div className="mb-4">
             <h2 
               className="text-4xl font-bold"
-              style={{ color: COLORS.green }}
+              style={{ 
+                color: COLORS.neonPrimary,
+                textShadow: `0 0 20px ${COLORS.neonPrimary}30`,
+              }}
             >
               {formattedEarnings}
             </h2>
           </div>
 
           {/* Card Footer */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-            <span className="text-gray-500 text-sm">View detailed breakdown</span>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
+          <div 
+            className="flex items-center justify-between pt-4"
+            style={{ borderTop: `1px solid ${COLORS.obsidian100}` }}
+          >
+            <span className="text-sm" style={{ color: COLORS.whiteLow }}>View detailed breakdown</span>
+            <ChevronRight className="w-5 h-5" style={{ color: COLORS.whiteLow }} />
           </div>
         </button>
       </div>
 
-      {/* Decorative Elements */}
+      {/* Decorative Neon Orbs */}
       <div 
-        className="absolute top-12 right-4 w-32 h-32 rounded-full opacity-10"
-        style={{ background: 'white' }}
+        className="absolute top-12 right-4 w-32 h-32 rounded-full opacity-10 blur-3xl"
+        style={{ background: COLORS.neonPrimary }}
       />
       <div 
-        className="absolute top-24 right-16 w-16 h-16 rounded-full opacity-5"
-        style={{ background: 'white' }}
+        className="absolute top-24 right-16 w-16 h-16 rounded-full opacity-5 blur-2xl"
+        style={{ background: COLORS.neonPrimary }}
       />
     </div>
   );
@@ -202,23 +230,38 @@ export function HeroSectionCompact({
     <div 
       className="rounded-3xl p-5 mb-4"
       style={{
-        background: `linear-gradient(135deg, ${COLORS.gradientStart} 0%, ${COLORS.gradientEnd} 100%)`,
+        backgroundColor: COLORS.obsidian200,
+        border: `1px solid ${COLORS.neonDim}`,
       }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-white font-semibold">Hello, {firstName}</h2>
-        <div className="bg-white px-3 py-1 rounded-full">
-          <span className="text-sm font-medium" style={{ color: COLORS.gradientEnd }}>
+        <h2 className="font-semibold" style={{ color: COLORS.whiteHigh }}>Hello, {firstName}</h2>
+        <div 
+          className="px-3 py-1 rounded-full"
+          style={{ 
+            backgroundColor: `${COLORS.neonPrimary}20`,
+            border: `1px solid ${COLORS.neonDim}`,
+          }}
+        >
+          <span className="text-sm font-medium" style={{ color: COLORS.neonPrimary }}>
             RyScore {ryScore}
           </span>
         </div>
       </div>
       
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4">
-        <p className="text-white/70 text-sm mb-1">Total Earnings</p>
+      <div 
+        className="backdrop-blur-sm rounded-2xl p-4"
+        style={{ backgroundColor: `${COLORS.neonDim}20` }}
+      >
+        <p className="text-sm mb-1" style={{ color: COLORS.whiteLow }}>Total Earnings</p>
         <div className="flex items-center justify-between">
-          <span className="text-white text-2xl font-bold">{formattedEarnings}</span>
-          <div className="flex items-center gap-1 text-green-300">
+          <span 
+            className="text-2xl font-bold"
+            style={{ color: COLORS.neonPrimary }}
+          >
+            {formattedEarnings}
+          </span>
+          <div className="flex items-center gap-1" style={{ color: COLORS.neonPrimary }}>
             <TrendingUp className="w-4 h-4" />
             <span className="text-sm font-medium">+{earningsTrend}%</span>
           </div>
@@ -229,4 +272,3 @@ export function HeroSectionCompact({
 }
 
 export default HeroSection;
-

@@ -1,11 +1,11 @@
 // ============================================
-// Transaction Screen - Cash App Inspired Design
-// Clean payment flow with minimal UI
+// Transaction Screen - OBSIDIAN Neon-Noir Design
+// Payment flow with neon accents and glassmorphism
 // ============================================
 
 import { useState, useEffect } from 'react';
 import { Screen } from '../App';
-import { X, ArrowUp, Search, ChevronRight, AlertTriangle, CheckCircle, Mic, Fingerprint } from 'lucide-react';
+import { X, ArrowUp, Search, ChevronRight, AlertTriangle, CheckCircle, Fingerprint } from 'lucide-react';
 import { PillButton } from './ui/pill-button';
 import { PinDots } from './ui/pin-dots';
 
@@ -41,7 +41,6 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   }, [initialData]);
 
   const handleAmountInput = (value: string) => {
-    // Only allow numbers and one decimal point
     if (/^\d*\.?\d{0,2}$/.test(value)) {
       setAmount(value);
     }
@@ -51,14 +50,11 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
     const amountNum = parseFloat(amount);
     
     if (amountNum > currentBalance) {
-      // Show insufficient balance
       return;
     }
 
     if (amountNum > 1000) {
-      // Need security verification for large amounts
       setStep('security');
-      // Simulate scam detection (30% chance for demo)
       if (Math.random() < 0.3) {
         setTimeout(() => setStep('scam_warning'), 2000);
       } else {
@@ -72,7 +68,6 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   const handlePinSubmit = async (pinValue: string) => {
     setIsLoading(true);
     
-    // Simulate verification
     await new Promise(resolve => setTimeout(resolve, 1000));
     
     if (pinValue === '1234') {
@@ -94,32 +89,34 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // Amount Screen
   if (step === 'amount') {
     return (
-      <div className="h-full flex flex-col bg-white">
+      <div className="h-full flex flex-col bg-obsidian-100">
         <div className="flex items-center justify-between px-4 py-4">
-          <button onClick={handleClose} className="w-10 h-10 flex items-center justify-center">
-            <X className="w-6 h-6 text-black" />
+          <button onClick={handleClose} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
           </button>
-          <span className="text-sm text-gray-500 font-medium">
+          <span className="text-sm text-white-low font-medium">
             Balance: RM {currentBalance.toLocaleString()}
           </span>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6">
           <div className="flex items-baseline gap-1 mb-2">
-            <span className="text-2xl text-gray-400">RM</span>
+            <span className="text-2xl text-white-muted">RM</span>
             <input
               type="text"
               inputMode="decimal"
               value={amount}
               onChange={(e) => handleAmountInput(e.target.value)}
               placeholder="0"
-              className="text-7xl font-bold text-gray-900 text-center bg-transparent border-none outline-none w-full"
-              style={{ caretColor: 'black' }}
+              className="text-7xl font-bold text-neon text-center bg-transparent border-none outline-none w-full font-mono-nums text-glow"
+              style={{ caretColor: 'var(--neon-primary)' }}
               autoFocus
             />
           </div>
           {parseFloat(amount) > currentBalance && (
-            <p className="text-red-500 text-sm">Exceeds your balance</p>
+            <div className="flex items-center gap-2 text-white-high text-sm alert-pattern px-3 py-1 rounded-lg">
+              <span>Exceeds your balance</span>
+            </div>
           )}
         </div>
 
@@ -129,6 +126,7 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
             disabled={!amount || parseFloat(amount) <= 0 || parseFloat(amount) > currentBalance}
             className="w-full"
             size="lg"
+            variant="neon"
             rightIcon={<ArrowUp className="w-5 h-5" />}
           >
             Pay
@@ -141,31 +139,31 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // Recipient Screen
   if (step === 'recipient') {
     return (
-      <div className="h-full flex flex-col bg-white">
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
-          <button onClick={() => setStep('amount')} className="w-10 h-10 flex items-center justify-center">
-            <X className="w-6 h-6 text-black" />
+      <div className="h-full flex flex-col bg-obsidian-100">
+        <div className="flex items-center justify-between px-4 py-4 border-b" style={{ borderColor: 'var(--white-divider)' }}>
+          <button onClick={() => setStep('amount')} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
           </button>
-          <span className="font-semibold text-gray-900">RM {parseFloat(amount).toFixed(2)}</span>
+          <span className="font-semibold text-neon">RM {parseFloat(amount).toFixed(2)}</span>
           <div className="w-10" />
         </div>
 
         <div className="px-6 py-4">
-          <div className="flex items-center gap-3 bg-gray-100 rounded-2xl px-4 py-3">
-            <Search className="w-5 h-5 text-gray-400" />
+          <div className="flex items-center gap-3 bg-obsidian-200 border rounded-2xl px-4 py-3" style={{ borderColor: 'var(--white-divider)' }}>
+            <Search className="w-5 h-5 text-white-muted" />
             <input
               type="text"
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
               placeholder="Name, phone, or email"
-              className="flex-1 bg-transparent outline-none text-gray-900"
+              className="flex-1 bg-transparent outline-none text-white-high placeholder-white-muted"
               autoFocus
             />
           </div>
         </div>
 
-        <div className="flex-1 px-6 overflow-y-auto">
-          <p className="text-gray-500 text-sm mb-3">Recent</p>
+        <div className="flex-1 px-6 overflow-y-auto scrollbar-obsidian">
+          <p className="text-white-low text-sm mb-3">Recent</p>
           {recentContacts.map((contact) => (
             <button
               key={contact.phone}
@@ -173,29 +171,30 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
                 setRecipient(contact.name);
                 setStep('confirm');
               }}
-              className="w-full flex items-center gap-4 py-3 hover:bg-gray-50 rounded-2xl px-2"
+              className="w-full flex items-center gap-4 py-3 hover:bg-obsidian-300 rounded-2xl px-2 transition-colors"
             >
               <div 
-                className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-black"
-                style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+                className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-obsidian-100 glow-neon-sm"
+                style={{ backgroundColor: 'var(--neon-primary)' }}
               >
                 {contact.avatar}
               </div>
               <div className="flex-1 text-left">
-                <p className="font-medium text-gray-900">{contact.name}</p>
-                <p className="text-sm text-gray-500">{contact.phone}</p>
+                <p className="font-medium text-white-high">{contact.name}</p>
+                <p className="text-sm text-white-low">{contact.phone}</p>
               </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+              <ChevronRight className="w-5 h-5 text-white-low" />
             </button>
           ))}
         </div>
 
         {recipient && (
-          <div className="p-6 border-t border-gray-100">
+          <div className="p-6 border-t" style={{ borderColor: 'var(--white-divider)' }}>
             <PillButton
               onClick={() => setStep('confirm')}
               className="w-full"
               size="lg"
+              variant="neon"
             >
               Continue
             </PillButton>
@@ -208,22 +207,22 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // Confirm Screen
   if (step === 'confirm') {
     return (
-      <div className="h-full flex flex-col bg-white">
+      <div className="h-full flex flex-col bg-obsidian-100">
         <div className="flex items-center px-4 py-4">
-          <button onClick={() => setStep('recipient')} className="w-10 h-10 flex items-center justify-center">
-            <X className="w-6 h-6 text-black" />
+          <button onClick={() => setStep('recipient')} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
           </button>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6">
           <div 
-            className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-2xl text-black mb-4"
-            style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+            className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-2xl text-obsidian-100 mb-4 glow-neon-lg"
+            style={{ backgroundColor: 'var(--neon-primary)' }}
           >
             {recipient.charAt(0).toUpperCase()}
           </div>
-          <p className="text-gray-500 mb-2">Pay {recipient}</p>
-          <p className="text-5xl font-bold text-gray-900 mb-1">RM {parseFloat(amount).toFixed(2)}</p>
+          <p className="text-white-low mb-2">Pay {recipient}</p>
+          <p className="text-5xl font-bold text-neon mb-1 font-mono-nums text-glow">RM {parseFloat(amount).toFixed(2)}</p>
         </div>
 
         <div className="p-6">
@@ -231,6 +230,7 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
             onClick={handlePayment}
             className="w-full"
             size="lg"
+            variant="neon"
           >
             Pay
           </PillButton>
@@ -242,12 +242,12 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // Security Check
   if (step === 'security') {
     return (
-      <div className="h-full flex flex-col bg-white items-center justify-center">
-        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 animate-pulse">
-          <Fingerprint className="w-8 h-8 text-gray-600" />
+      <div className="h-full flex flex-col bg-obsidian-100 items-center justify-center">
+        <div className="w-16 h-16 bg-obsidian-300 rounded-full flex items-center justify-center mb-4 animate-neon-pulse">
+          <Fingerprint className="w-8 h-8 text-neon" />
         </div>
-        <p className="text-xl font-bold text-gray-900 mb-2">Verifying payment</p>
-        <p className="text-gray-500">Running security checks...</p>
+        <p className="text-xl font-bold text-white-high mb-2">Verifying payment</p>
+        <p className="text-white-low">Running security checks...</p>
       </div>
     );
   }
@@ -255,21 +255,21 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // Scam Warning
   if (step === 'scam_warning') {
     return (
-      <div className="h-full flex flex-col bg-white">
+      <div className="h-full flex flex-col bg-obsidian-100">
         <div className="flex-1 flex flex-col items-center justify-center px-6">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mb-4">
-            <AlertTriangle className="w-10 h-10 text-red-600" />
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 animate-flicker alert-pattern">
+            <AlertTriangle className="w-10 h-10 text-obsidian-100" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">
+          <h2 className="text-2xl font-bold text-white-high text-center mb-2">
             Payment flagged
           </h2>
-          <p className="text-gray-500 text-center mb-6">
+          <p className="text-white-low text-center mb-6">
             This transaction has patterns similar to known scams. Please verify this is a legitimate payment.
           </p>
           
-          <div className="w-full bg-red-50 rounded-2xl p-4 mb-6">
-            <p className="text-red-800 text-sm font-medium mb-2">⚠️ Warning signs detected:</p>
-            <ul className="text-red-700 text-sm space-y-1">
+          <div className="w-full card-obsidian border-l-4 mb-6" style={{ borderLeftColor: 'var(--white-high)' }}>
+            <p className="text-white-high text-sm font-medium mb-2">⚠️ Warning signs detected:</p>
+            <ul className="text-white-low text-sm space-y-1">
               <li>• Unknown recipient</li>
               <li>• Large amount</li>
               <li>• Unusual payment pattern</li>
@@ -290,6 +290,7 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
             onClick={handleClose}
             className="w-full"
             size="lg"
+            variant="neon"
           >
             Cancel payment
           </PillButton>
@@ -301,16 +302,16 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // PIN Screen
   if (step === 'pin') {
     return (
-      <div className="h-full flex flex-col bg-white">
+      <div className="h-full flex flex-col bg-obsidian-100">
         <div className="flex items-center px-4 py-4">
-          <button onClick={() => setStep('confirm')} className="w-10 h-10 flex items-center justify-center">
-            <X className="w-6 h-6 text-black" />
+          <button onClick={() => setStep('confirm')} className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors">
+            <X className="w-6 h-6 text-white-high" />
           </button>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter PIN to pay</h2>
-          <p className="text-gray-500 mb-8">RM {parseFloat(amount).toFixed(2)} to {recipient}</p>
+          <h2 className="text-2xl font-bold text-white-high mb-2">Enter PIN to pay</h2>
+          <p className="text-white-low mb-8">RM {parseFloat(amount).toFixed(2)} to {recipient}</p>
           
           <PinDots length={4} filled={pin.length} error={pinError} size="lg" />
           
@@ -329,9 +330,9 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
             autoFocus
           />
 
-          <div className="mt-8 bg-gray-50 rounded-2xl p-4 w-full max-w-xs">
-            <p className="text-gray-600 text-sm text-center">
-              <span className="font-medium">Dev Mode:</span> Use PIN <span className="font-mono bg-gray-200 px-2 py-0.5 rounded">1234</span>
+          <div className="mt-8 card-obsidian w-full max-w-xs">
+            <p className="text-white-low text-sm text-center">
+              <span className="font-medium text-neon">Dev Mode:</span> Use PIN <span className="font-mono bg-obsidian-300 text-neon px-2 py-0.5 rounded">1234</span>
             </p>
           </div>
         </div>
@@ -342,13 +343,13 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
   // Success Screen
   if (step === 'success') {
     return (
-      <div className="h-full flex flex-col bg-white">
+      <div className="h-full flex flex-col bg-obsidian-100">
         <div className="flex-1 flex flex-col items-center justify-center px-6">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
-            <CheckCircle className="w-10 h-10 text-green-600" />
+          <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 glow-neon-xl" style={{ backgroundColor: 'rgba(57, 255, 20, 0.2)' }}>
+            <CheckCircle className="w-10 h-10 text-neon" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment sent!</h2>
-          <p className="text-gray-500 text-center">
+          <h2 className="text-2xl font-bold text-white-high mb-2">Payment sent!</h2>
+          <p className="text-white-low text-center">
             RM {parseFloat(amount).toFixed(2)} sent to {recipient}
           </p>
         </div>
@@ -358,6 +359,7 @@ export function TransactionScreen({ navigateTo, initialData }: TransactionScreen
             onClick={handleClose}
             className="w-full"
             size="lg"
+            variant="neon"
           >
             Done
           </PillButton>

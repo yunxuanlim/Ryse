@@ -1,6 +1,6 @@
 // ============================================
-// Progress Dots - Cash App Inspired
-// Step indicator with active pill state
+// Progress Dots - OBSIDIAN Neon-Noir Design
+// Neon green active state, white inactive
 // ============================================
 
 interface ProgressDotsProps {
@@ -23,12 +23,12 @@ export function ProgressDots({ total, current, onDotClick }: ProgressDotsProps) 
             disabled={!onDotClick}
             className={`
               h-2 rounded-full
-              transition-all duration-300 ease-out
+              transition-all duration-300 ease-fintech
               ${isActive 
-                ? 'w-8 bg-black' 
+                ? 'w-8 bg-neon glow-neon-sm' 
                 : isCompleted 
-                  ? 'w-2 bg-black' 
-                  : 'w-2 bg-gray-300'
+                  ? 'w-2 bg-neon' 
+                  : 'w-2 bg-obsidian-400'
               }
               ${onDotClick ? 'cursor-pointer hover:opacity-80' : 'cursor-default'}
             `}
@@ -42,4 +42,3 @@ export function ProgressDots({ total, current, onDotClick }: ProgressDotsProps) 
 }
 
 export default ProgressDots;
-

@@ -1,6 +1,6 @@
 // ============================================
-// RyScore Screen - Cash App Inspired Design
-// Clean score display with white cards on gray bg
+// RyScore Screen - OBSIDIAN Neon-Noir Design
+// Neon score display with deep black background
 // ============================================
 
 import { Screen } from '../App';
@@ -27,30 +27,30 @@ export function RyScoreScreen({ navigateTo }: RyScoreScreenProps) {
   ];
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 overflow-y-auto pb-24">
+    <div className="h-full flex flex-col bg-obsidian-100 overflow-y-auto pb-24 scrollbar-obsidian">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-6">
+      <div className="bg-obsidian-200 px-4 pt-4 pb-6 border-b" style={{ borderColor: 'var(--white-divider)' }}>
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
+            className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-black" />
+            <ArrowLeft className="w-6 h-6 text-white-high" />
           </button>
-          <h1 className="text-xl font-bold text-gray-900">RyScore</h1>
+          <h1 className="text-xl font-bold text-white-high">RyScore</h1>
         </div>
 
         {/* Score Card */}
-        <div className="bg-gray-50 rounded-3xl p-8 text-center">
-          <p className="text-gray-500 text-sm mb-2">Your credit score</p>
-          <div className="text-7xl font-bold text-gray-900 mb-3 tabular-nums">720</div>
+        <div className="card-obsidian text-center">
+          <p className="text-white-low text-sm mb-2">Your credit score</p>
+          <div className="text-7xl font-bold text-neon mb-3 font-mono-nums text-glow animate-neon-pulse">720</div>
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-2xl">🥇</span>
-            <span className="text-lg font-semibold text-amber-600 bg-amber-100 px-3 py-1 rounded-full">
+            <span className="text-lg font-semibold px-3 py-1 rounded-full glow-neon-sm" style={{ backgroundColor: 'rgba(57, 255, 20, 0.2)', color: 'var(--neon-primary)' }}>
               Gold Tier
             </span>
           </div>
-          <div className="flex items-center justify-center gap-2 text-green-600 text-sm">
+          <div className="flex items-center justify-center gap-2 text-neon text-sm">
             <TrendingUp className="w-4 h-4" />
             <span>+15 points this month</span>
           </div>
@@ -60,105 +60,81 @@ export function RyScoreScreen({ navigateTo }: RyScoreScreenProps) {
       {/* Content */}
       <div className="px-4 pt-4 space-y-4">
         {/* Progress Bar Card */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm">
+        <div className="card-obsidian">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-gray-500 text-sm">Score progress</span>
-            <button className="text-gray-400">
+            <span className="text-white-low text-sm">Score progress</span>
+            <button className="text-white-muted hover:text-white-low transition-colors">
               <Info className="w-4 h-4" />
             </button>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-3 mb-3">
+          <div className="w-full bg-obsidian-300 rounded-full h-3 mb-3">
             <div 
-              className="h-3 bg-black rounded-full transition-all duration-500"
-              style={{ width: '76%' }}
+              className="h-3 rounded-full transition-all duration-500 glow-neon-sm"
+              style={{ width: '76%', backgroundColor: 'var(--neon-primary)' }}
             />
           </div>
-          <div className="flex justify-between text-xs text-gray-400">
+          <div className="flex justify-between text-xs text-white-muted">
             <span>300</span>
-            <span>720</span>
+            <span className="text-neon">720</span>
             <span>850</span>
           </div>
         </div>
 
         {/* Score Factors */}
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="font-semibold text-gray-900">What makes up your score</h3>
+        <div className="card-obsidian">
+          <h3 className="text-white-high font-semibold mb-4">Score Breakdown</h3>
+          <div className="space-y-4">
+            {scoreFactors.map((factor, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-obsidian-300 rounded-xl flex items-center justify-center text-lg">
+                  {factor.emoji}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white-high text-sm font-medium">{factor.name}</span>
+                    <span className="text-neon text-sm font-mono">{factor.value}%</span>
+                  </div>
+                  <div className="w-full bg-obsidian-300 rounded-full h-1.5">
+                    <div 
+                      className="h-1.5 rounded-full transition-all duration-500"
+                      style={{ width: `${factor.value}%`, backgroundColor: 'var(--neon-primary)' }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          {scoreFactors.map((factor, index) => (
-            <div 
-              key={factor.name}
-              className={`flex items-center gap-4 p-4 ${index !== scoreFactors.length - 1 ? 'border-b border-gray-50' : ''}`}
-            >
-              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-xl">
-                {factor.emoji}
-              </div>
-              <div className="flex-1">
-                <p className="text-gray-900 font-medium text-sm">{factor.name}</p>
-                <p className="text-gray-400 text-xs">{factor.desc}</p>
-              </div>
-              <div className="text-right">
-                <span className="text-gray-900 font-semibold">{factor.value}%</span>
-              </div>
-            </div>
-          ))}
         </div>
 
-        {/* Ways to Improve */}
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-          <div className="p-5 border-b border-gray-100">
-            <h3 className="font-semibold text-gray-900">Ways to improve</h3>
+        {/* Improvements */}
+        <div className="card-obsidian">
+          <h3 className="text-white-high font-semibold mb-4">Boost Your Score</h3>
+          <div className="space-y-3">
+            {improvements.map((item, index) => (
+              <button 
+                key={index}
+                className="w-full flex items-center gap-3 p-3 bg-obsidian-300 rounded-xl hover:bg-obsidian-400 transition-colors"
+              >
+                <span className="text-xl">{item.emoji}</span>
+                <div className="flex-1 text-left">
+                  <span className="text-white-high text-sm">{item.action}</span>
+                </div>
+                <span className="text-neon font-semibold text-sm">{item.impact}</span>
+                <ChevronRight className="w-4 h-4 text-white-low" />
+              </button>
+            ))}
           </div>
-          {improvements.map((item, index) => (
-            <button 
-              key={item.action}
-              className={`w-full flex items-center gap-4 p-4 hover:bg-gray-50 ${index !== improvements.length - 1 ? 'border-b border-gray-50' : ''}`}
-            >
-              <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-xl">
-                {item.emoji}
-              </div>
-              <div className="flex-1 text-left">
-                <p className="text-gray-900 font-medium text-sm">{item.action}</p>
-                <p className="text-green-600 text-xs font-medium">{item.impact} points</p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
-          ))}
         </div>
 
-        {/* Unlock More */}
-        <div 
-          className="rounded-3xl p-6 shadow-sm"
-          style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+        {/* CTA */}
+        <PillButton
+          onClick={() => navigateTo('loan')}
+          className="w-full"
+          size="lg"
+          variant="neon"
         >
-          <div className="flex items-start gap-4">
-            <div className="text-3xl">💳</div>
-            <div className="flex-1">
-              <h3 className="font-bold text-gray-900 mb-1">Unlock up to RM 1,500</h3>
-              <p className="text-gray-700 text-sm mb-4">
-                Your Gold tier qualifies you for instant cash advances
-              </p>
-              <PillButton size="sm" className="w-full">
-                Apply Now
-              </PillButton>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-8 py-4 max-w-md mx-auto">
-        <div className="flex justify-around">
-          <button onClick={() => navigateTo('dashboard')} className="text-gray-400 text-sm">
-            Money
-          </button>
-          <button className="text-black font-semibold text-sm border-b-2 border-black pb-1">
-            Score
-          </button>
-          <button onClick={() => navigateTo('savings')} className="text-gray-400 text-sm">
-            Savings
-          </button>
-        </div>
+          Get Quick Advance
+        </PillButton>
       </div>
     </div>
   );

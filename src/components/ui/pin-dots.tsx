@@ -1,6 +1,6 @@
 // ============================================
-// PIN Dots - Cash App Inspired
-// 4-dot PIN indicator with filled/empty states
+// PIN Dots - OBSIDIAN Neon-Noir Design
+// Neon green filled states, obsidian empty
 // ============================================
 
 interface PinDotsProps {
@@ -38,30 +38,18 @@ export function PinDots({
           className={`
             ${sizeClasses[size]}
             rounded-full
-            transition-all duration-200 ease-out
+            transition-all duration-200 ease-fintech
             ${index < filled 
               ? error 
-                ? 'bg-red-500' 
-                : 'bg-black scale-110'
-              : 'border-2 border-gray-300 bg-transparent'
+                ? 'alert-pattern' 
+                : 'bg-neon scale-110 glow-neon-sm'
+              : 'border-2 border-white-divider bg-transparent'
             }
           `}
         />
       ))}
-      
-      <style>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-          20%, 40%, 60%, 80% { transform: translateX(4px); }
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-      `}</style>
     </div>
   );
 }
 
 export default PinDots;
-

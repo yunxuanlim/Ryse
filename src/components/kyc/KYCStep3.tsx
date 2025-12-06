@@ -1,11 +1,22 @@
 // ============================================
 // KYC Step 3: Face Liveness Verification
-// Cash App Inspired - Clean camera interface
+// Project Obsidian - Neon-Noir Dark Theme
 // ============================================
 
 import { useState, useRef, useEffect } from 'react';
 import { Camera, Check, RefreshCw, AlertCircle } from 'lucide-react';
 import { KYCStep3Data } from '../../types';
+
+// Obsidian Theme Colors
+const COLORS = {
+  obsidian100: '#060606',
+  obsidian200: '#121212',
+  neonPrimary: '#39FF14',
+  neonDim: '#1B7A0F',
+  whiteHigh: '#FFFFFF',
+  whiteMedium: 'rgba(255,255,255,0.87)',
+  whiteLow: 'rgba(255,255,255,0.60)',
+};
 
 interface KYCStep3Props {
   data: KYCStep3Data;
@@ -89,8 +100,11 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
     <div className="space-y-6 py-4">
       {/* Instructions */}
       {!cameraActive && !isCompleted && (
-        <div className="bg-gray-50 rounded-2xl p-4">
-          <p className="text-gray-600 text-sm">
+        <div 
+          className="rounded-2xl p-4"
+          style={{ backgroundColor: COLORS.obsidian200 }}
+        >
+          <p className="text-sm" style={{ color: COLORS.whiteMedium }}>
             📸 We'll verify your identity with a quick selfie. Follow the on-screen prompts.
           </p>
         </div>
@@ -99,7 +113,10 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
       {/* Camera View / Start Button */}
       <div className="relative">
         {cameraActive ? (
-          <div className="relative rounded-2xl overflow-hidden bg-black">
+          <div 
+            className="relative rounded-2xl overflow-hidden"
+            style={{ backgroundColor: COLORS.obsidian100 }}
+          >
             <video
               ref={videoRef}
               autoPlay
@@ -110,17 +127,23 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
             
             {/* Face guide overlay */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-48 h-64 border-4 border-white/50 rounded-full" />
+              <div 
+                className="w-48 h-64 border-4 rounded-full"
+                style={{ borderColor: `${COLORS.neonPrimary}50` }}
+              />
             </div>
 
             {/* Current action */}
             {isVerifying && (
               <div className="absolute bottom-6 left-0 right-0 flex justify-center">
-                <div className="bg-black/80 backdrop-blur-sm rounded-full px-6 py-3 flex items-center gap-3">
+                <div 
+                  className="backdrop-blur-sm rounded-full px-6 py-3 flex items-center gap-3"
+                  style={{ backgroundColor: `${COLORS.obsidian100}CC` }}
+                >
                   <span className="text-2xl">
                     {actions.find(a => a.id === currentAction)?.emoji}
                   </span>
-                  <span className="text-white font-medium">
+                  <span className="font-medium" style={{ color: COLORS.whiteHigh }}>
                     {actions.find(a => a.id === currentAction)?.label}
                   </span>
                 </div>
@@ -128,31 +151,38 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
             )}
           </div>
         ) : isCompleted ? (
-          <div className="bg-green-50 rounded-2xl p-8 flex flex-col items-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <Check className="w-10 h-10 text-green-600" />
+          <div 
+            className="rounded-2xl p-8 flex flex-col items-center"
+            style={{ backgroundColor: `${COLORS.neonPrimary}15` }}
+          >
+            <div 
+              className="w-20 h-20 rounded-full flex items-center justify-center mb-4"
+              style={{ backgroundColor: COLORS.neonPrimary }}
+            >
+              <Check className="w-10 h-10" style={{ color: COLORS.obsidian100 }} />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Verified!</h3>
-            <p className="text-gray-500 text-center">
+            <h3 className="text-xl font-bold mb-2" style={{ color: COLORS.whiteHigh }}>Verified!</h3>
+            <p className="text-center" style={{ color: COLORS.whiteLow }}>
               Your face has been successfully verified
             </p>
-            <p className="text-green-600 text-sm font-medium mt-2">
+            <p className="text-sm font-medium mt-2" style={{ color: COLORS.neonPrimary }}>
               Liveness Score: {((data.livenessScore || 0) * 100).toFixed(0)}%
             </p>
           </div>
         ) : (
           <button
             onClick={startCamera}
-            className="w-full h-64 bg-gray-100 rounded-2xl flex flex-col items-center justify-center gap-4 hover:bg-gray-200 transition-colors"
+            className="w-full h-64 rounded-2xl flex flex-col items-center justify-center gap-4 transition-all hover:opacity-90"
+            style={{ backgroundColor: COLORS.obsidian200 }}
           >
             <div 
               className="w-16 h-16 rounded-2xl flex items-center justify-center"
-              style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+              style={{ backgroundColor: COLORS.neonPrimary }}
             >
-              <Camera className="w-8 h-8 text-black" />
+              <Camera className="w-8 h-8" style={{ color: COLORS.obsidian100 }} />
             </div>
-            <span className="text-gray-900 font-medium">Start face verification</span>
-            <span className="text-gray-500 text-sm">Takes about 10 seconds</span>
+            <span className="font-medium" style={{ color: COLORS.whiteHigh }}>Start face verification</span>
+            <span className="text-sm" style={{ color: COLORS.whiteLow }}>Takes about 10 seconds</span>
           </button>
         )}
       </div>
@@ -167,30 +197,39 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
             return (
               <div
                 key={action.id}
-                className={`flex items-center gap-3 p-4 rounded-2xl transition-all ${
-                  isComplete
-                    ? 'bg-green-50'
-                    : isCurrent
-                    ? 'bg-gray-100'
-                    : 'bg-gray-50'
-                }`}
+                className="flex items-center gap-3 p-4 rounded-2xl transition-all"
+                style={{
+                  backgroundColor: isComplete 
+                    ? `${COLORS.neonPrimary}15` 
+                    : isCurrent 
+                    ? COLORS.obsidian200 
+                    : COLORS.obsidian200,
+                  border: isComplete ? `1px solid ${COLORS.neonDim}` : 'none',
+                }}
               >
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  isComplete
-                    ? 'bg-green-500 text-white'
-                    : isCurrent
-                    ? 'bg-black text-white animate-pulse'
-                    : 'bg-gray-300 text-gray-500'
-                }`}>
+                <div 
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    isCurrent ? 'animate-pulse' : ''
+                  }`}
+                  style={{
+                    backgroundColor: isComplete 
+                      ? COLORS.neonPrimary 
+                      : isCurrent 
+                      ? COLORS.neonDim 
+                      : COLORS.obsidian100,
+                    color: isComplete || isCurrent ? COLORS.obsidian100 : COLORS.whiteLow,
+                  }}
+                >
                   {isComplete ? (
                     <Check className="w-4 h-4" />
                   ) : (
                     <span className="text-sm">{action.emoji}</span>
                   )}
                 </div>
-                <span className={`font-medium ${
-                  isComplete ? 'text-green-700' : 'text-gray-700'
-                }`}>
+                <span 
+                  className="font-medium"
+                  style={{ color: isComplete ? COLORS.neonPrimary : COLORS.whiteMedium }}
+                >
                   {action.label}
                 </span>
               </div>
@@ -210,7 +249,8 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
             });
             setCompletedActions([]);
           }}
-          className="w-full flex items-center justify-center gap-2 py-3 text-gray-600"
+          className="w-full flex items-center justify-center gap-2 py-3"
+          style={{ color: COLORS.whiteLow }}
         >
           <RefreshCw className="w-4 h-4" />
           <span>Redo verification</span>
@@ -219,7 +259,14 @@ export function KYCStep3({ data, onUpdate, error }: KYCStep3Props) {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-50 rounded-2xl p-4 text-red-700 text-sm flex items-start gap-2">
+        <div 
+          className="rounded-2xl p-4 text-sm flex items-start gap-2"
+          style={{
+            background: 'repeating-linear-gradient(45deg, #060606, #060606 10px, #1a1a1a 10px, #1a1a1a 20px)',
+            color: COLORS.whiteHigh,
+            border: '1px solid rgba(255,255,255,0.2)',
+          }}
+        >
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           {error}
         </div>

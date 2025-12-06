@@ -1,11 +1,11 @@
 // ============================================
-// Login Screen - Cash App Inspired Design
-// Clean 4-dot PIN input with minimal UI
+// Login Screen - OBSIDIAN Neon-Noir Design
+// Deep black background, neon green accents
 // ============================================
 
 import { useState, useRef, useEffect } from 'react';
 import { Screen } from '../App';
-import { X, Loader2, Eye, EyeOff, Phone } from 'lucide-react';
+import { X, Loader2, Phone } from 'lucide-react';
 import { PillButton } from './ui/pill-button';
 import { PinDots } from './ui/pin-dots';
 
@@ -127,7 +127,6 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
 
   const handlePinSetup = async (confirmValue: string) => {
     const cleanPhone = '+60' + phoneNumber.replace(/-/g, '');
-    // Using the 4-digit PIN but padding to 6 for backend compatibility
     const paddedPin = pin + '00';
     const paddedConfirm = confirmValue + '00';
     const success = await auth.setUserMPIN(cleanPhone, paddedPin, paddedConfirm);
@@ -136,7 +135,6 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
 
   const handlePinLogin = async (pinValue: string) => {
     const cleanPhone = '+60' + phoneNumber.replace(/-/g, '');
-    // Using the 4-digit PIN but padding to 6 for backend compatibility
     const paddedPin = pinValue + '00';
     const success = await auth.loginWithPin(cleanPhone, paddedPin);
     if (success) {
@@ -194,24 +192,24 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
   };
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-obsidian-100">
       {/* Header with X button */}
       <div className="flex items-center px-4 py-4">
         <button
           onClick={handleBack}
-          className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
+          className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors"
         >
-          <X className="w-6 h-6 text-black" />
+          <X className="w-6 h-6 text-white-high" />
         </button>
       </div>
 
       {/* Content */}
       <div className="flex-1 px-6 pt-8">
         {/* Title */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-white-high mb-2">
           {getTitle()}
         </h1>
-        <p className="text-gray-500 mb-8">
+        <p className="text-white-low mb-8">
           {getSubtitle()}
         </p>
 
@@ -219,23 +217,25 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
         {step === 'phone' && (
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-4 py-4 bg-gray-100 rounded-2xl">
+              <div className="flex items-center gap-2 px-4 py-4 bg-obsidian-300 rounded-2xl border border-white-divider">
                 <span className="text-lg">🇲🇾</span>
-                <span className="text-gray-900 font-medium">+60</span>
+                <span className="text-white-high font-medium">+60</span>
               </div>
               <input
                 type="tel"
                 value={phoneNumber}
                 onChange={handlePhoneChange}
                 placeholder="12-3456-7890"
-                className="flex-1 px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black text-lg"
+                className="flex-1 px-4 py-4 bg-obsidian-200 border border-white-divider rounded-2xl focus:outline-none focus:ring-2 focus:ring-neon-primary text-lg text-white-high placeholder-white-muted"
                 maxLength={12}
                 autoFocus
               />
             </div>
 
             {error && (
-              <p className="text-red-500 text-sm">{error}</p>
+              <div className="flex items-center gap-2 text-white-high text-sm alert-pattern p-2 rounded-lg">
+                <span>{error}</span>
+              </div>
             )}
           </div>
         )}
@@ -253,19 +253,21 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
                 auth.clearError();
               }}
               placeholder="000000"
-              className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black text-2xl text-center tracking-[0.5em] font-mono"
+              className="w-full px-4 py-4 bg-obsidian-200 border border-white-divider rounded-2xl focus:outline-none focus:ring-2 focus:ring-neon-primary text-2xl text-center tracking-[0.5em] font-mono text-neon placeholder-white-muted"
               maxLength={6}
               autoFocus
             />
 
-            <div className="bg-gray-50 rounded-2xl p-4">
-              <p className="text-gray-600 text-sm">
-                <span className="font-medium">Dev Mode:</span> Use code <span className="font-mono bg-gray-200 px-2 py-0.5 rounded">123456</span>
+            <div className="bg-obsidian-200 rounded-2xl p-4 border border-white-divider">
+              <p className="text-white-low text-sm">
+                <span className="font-medium text-neon">Dev Mode:</span> Use code <span className="font-mono bg-obsidian-300 text-neon px-2 py-0.5 rounded">123456</span>
               </p>
             </div>
 
             {error && (
-              <p className="text-red-500 text-sm">{error}</p>
+              <div className="flex items-center gap-2 text-white-high text-sm alert-pattern p-2 rounded-lg">
+                <span>{error}</span>
+              </div>
             )}
 
             <button
@@ -275,7 +277,7 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
                 else await auth.requestOTP(cleanPhone);
               }}
               disabled={auth.isLoading}
-              className="text-black font-medium underline text-sm"
+              className="text-neon font-medium underline text-sm hover:text-neon-bright transition-colors"
             >
               {auth.isLoading ? 'Sending...' : 'Resend code'}
             </button>
@@ -307,21 +309,23 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
             {/* Tap to type hint */}
             <button
               onClick={() => hiddenInputRef.current?.focus()}
-              className="mt-8 text-gray-400 text-sm"
+              className="mt-8 text-white-muted text-sm hover:text-white-low transition-colors"
             >
               Tap to enter PIN
             </button>
 
             {step === 'pin_login' && (
-              <div className="mt-8 bg-gray-50 rounded-2xl p-4 w-full">
-                <p className="text-gray-600 text-sm text-center">
-                  <span className="font-medium">Dev Mode:</span> Use PIN <span className="font-mono bg-gray-200 px-2 py-0.5 rounded">1234</span>
+              <div className="mt-8 bg-obsidian-200 rounded-2xl p-4 w-full border border-white-divider">
+                <p className="text-white-low text-sm text-center">
+                  <span className="font-medium text-neon">Dev Mode:</span> Use PIN <span className="font-mono bg-obsidian-300 text-neon px-2 py-0.5 rounded">1234</span>
                 </p>
               </div>
             )}
 
             {error && (
-              <p className="text-red-500 text-sm mt-4">{error}</p>
+              <div className="mt-4 flex items-center gap-2 text-white-high text-sm alert-pattern p-2 rounded-lg">
+                <span>{error}</span>
+              </div>
             )}
           </div>
         )}
@@ -337,6 +341,7 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
               isLoading={auth.isLoading}
               className="w-full"
               size="lg"
+              variant="neon"
             >
               Next
             </PillButton>
@@ -359,6 +364,7 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
             isLoading={auth.isLoading}
             className="w-full"
             size="lg"
+            variant="neon"
           >
             Verify
           </PillButton>
@@ -366,11 +372,11 @@ export function LoginScreen({ navigateTo, onAuthSuccess, auth }: LoginScreenProp
 
         {(step === 'pin_setup' || step === 'pin_confirm' || step === 'pin_login') && auth.isLoading && (
           <div className="flex items-center justify-center py-4">
-            <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+            <Loader2 className="w-6 h-6 animate-spin text-neon" />
           </div>
         )}
 
-        <p className="text-center text-xs text-gray-400 pt-2">
+        <p className="text-center text-xs text-white-muted pt-2">
           By continuing, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>

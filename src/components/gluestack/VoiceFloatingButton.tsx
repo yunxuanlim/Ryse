@@ -1,21 +1,21 @@
 // ============================================
-// VoiceFloatingButton Component - Gluestack Style
-// Large circular button with mic icon
-// Opens modal with listening waveform animation
+// VoiceFloatingButton Component - Project Obsidian
+// Neon-Noir Dark Theme with modal
 // ============================================
 
 import { useState, useEffect, useCallback } from 'react';
 import { Mic, X, MicOff } from 'lucide-react';
 import * as Dialog from '@radix-ui/react-dialog';
 
-// RYSE Branding Colors
+// Obsidian Theme Colors
 const COLORS = {
-  primary: '#0052FF',    // Primary Blue
-  accent: '#FFD300',     // Yellow (Voice Button)
-  accentDark: '#E5BE00', // Darker yellow for hover
-  white: '#FFFFFF',
-  black: '#000000',
-  gray: '#6B7280',
+  obsidian100: '#060606',
+  obsidian200: '#121212',
+  neonPrimary: '#39FF14',
+  neonDim: '#1B7A0F',
+  whiteHigh: '#FFFFFF',
+  whiteMedium: 'rgba(255,255,255,0.87)',
+  whiteLow: 'rgba(255,255,255,0.60)',
 };
 
 interface VoiceFloatingButtonProps {
@@ -109,48 +109,57 @@ export function VoiceFloatingButton({
               flex items-center justify-center
               transition-all duration-200 ease-out
               hover:scale-110 active:scale-95
-              focus:outline-none focus:ring-4 focus:ring-yellow-300
+              focus:outline-none
               z-50
             `}
             style={{ 
-              backgroundColor: COLORS.accent,
-              boxShadow: `0 8px 32px ${COLORS.accent}50, 0 4px 12px rgba(0,0,0,0.15)`,
+              backgroundColor: COLORS.neonPrimary,
+              boxShadow: `0 8px 32px ${COLORS.neonPrimary}50, 0 0 30px ${COLORS.neonPrimary}30`,
             }}
             aria-label="Voice Assistant"
           >
-            <Mic className={`${config.icon} text-black`} strokeWidth={2.5} />
+            <Mic className={`${config.icon}`} style={{ color: COLORS.obsidian100 }} strokeWidth={2.5} />
             
             {/* Pulse Animation Ring */}
             <span 
               className="absolute inset-0 rounded-full animate-ping opacity-30"
-              style={{ backgroundColor: COLORS.accent }}
+              style={{ backgroundColor: COLORS.neonPrimary }}
             />
           </button>
         </Dialog.Trigger>
 
         {/* Modal */}
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <Dialog.Overlay 
+            className="fixed inset-0 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+            style={{ backgroundColor: `${COLORS.obsidian100}CC` }}
+          />
           
           <Dialog.Content 
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md bg-white rounded-3xl shadow-2xl z-50 p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md rounded-3xl shadow-2xl z-50 p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+            style={{ 
+              backgroundColor: COLORS.obsidian200,
+              border: `1px solid ${COLORS.neonDim}`,
+              boxShadow: `0 0 50px ${COLORS.neonPrimary}20`,
+            }}
           >
             {/* Close Button */}
             <Dialog.Close asChild>
               <button
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                style={{ backgroundColor: COLORS.obsidian100 }}
                 aria-label="Close"
               >
-                <X className="w-5 h-5 text-gray-600" />
+                <X className="w-5 h-5" style={{ color: COLORS.whiteLow }} />
               </button>
             </Dialog.Close>
 
             {/* Header */}
             <div className="text-center mb-6">
-              <Dialog.Title className="text-xl font-bold text-gray-900">
+              <Dialog.Title className="text-xl font-bold" style={{ color: COLORS.whiteHigh }}>
                 Ryse AI Assistant
               </Dialog.Title>
-              <Dialog.Description className="text-gray-500 text-sm mt-1">
+              <Dialog.Description className="text-sm mt-1" style={{ color: COLORS.whiteLow }}>
                 {isListening ? 'Listening to you...' : 'Tap the mic to speak'}
               </Dialog.Description>
             </div>
@@ -161,13 +170,16 @@ export function VoiceFloatingButton({
             </div>
 
             {/* Transcript Display */}
-            <div className="bg-gray-50 rounded-2xl p-4 min-h-[80px] mb-6">
+            <div 
+              className="rounded-2xl p-4 min-h-[80px] mb-6"
+              style={{ backgroundColor: COLORS.obsidian100 }}
+            >
               {error ? (
-                <p className="text-red-500 text-sm text-center">{error}</p>
+                <p className="text-sm text-center" style={{ color: '#FF4444' }}>{error}</p>
               ) : transcript ? (
-                <p className="text-gray-800 text-center">{transcript}</p>
+                <p className="text-center" style={{ color: COLORS.whiteMedium }}>{transcript}</p>
               ) : (
-                <p className="text-gray-400 text-sm text-center">
+                <p className="text-sm text-center" style={{ color: COLORS.whiteLow }}>
                   Say something like "How much did I earn this week?"
                 </p>
               )}
@@ -183,29 +195,25 @@ export function VoiceFloatingButton({
                     handleStartListening();
                   }
                 }}
-                className={`
-                  w-16 h-16 rounded-full flex items-center justify-center
-                  transition-all duration-200
-                  ${isListening 
-                    ? 'bg-red-500 hover:bg-red-600' 
-                    : 'hover:scale-105'
-                  }
-                `}
+                className="w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200"
                 style={{ 
-                  backgroundColor: isListening ? undefined : COLORS.accent,
+                  backgroundColor: isListening ? '#FF4444' : COLORS.neonPrimary,
+                  boxShadow: isListening 
+                    ? '0 0 20px #FF444450' 
+                    : `0 0 20px ${COLORS.neonPrimary}50`,
                 }}
               >
                 {isListening ? (
-                  <MicOff className="w-7 h-7 text-white" />
+                  <MicOff className="w-7 h-7" style={{ color: COLORS.whiteHigh }} />
                 ) : (
-                  <Mic className="w-7 h-7 text-black" />
+                  <Mic className="w-7 h-7" style={{ color: COLORS.obsidian100 }} />
                 )}
               </button>
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-6 pt-4 border-t border-gray-100">
-              <p className="text-xs text-gray-500 text-center mb-3">Quick commands:</p>
+            <div className="mt-6 pt-4" style={{ borderTop: `1px solid ${COLORS.obsidian100}` }}>
+              <p className="text-xs text-center mb-3" style={{ color: COLORS.whiteLow }}>Quick commands:</p>
               <div className="flex flex-wrap justify-center gap-2">
                 {['Check balance', 'My earnings', 'Apply loan', 'RyScore'].map((action) => (
                   <button
@@ -214,7 +222,12 @@ export function VoiceFloatingButton({
                       setTranscript(action);
                       onTranscript?.(action);
                     }}
-                    className="px-3 py-1.5 bg-gray-100 rounded-full text-xs text-gray-700 hover:bg-gray-200 transition-colors"
+                    className="px-3 py-1.5 rounded-full text-xs transition-colors"
+                    style={{ 
+                      backgroundColor: COLORS.obsidian100,
+                      color: COLORS.whiteMedium,
+                      border: `1px solid ${COLORS.neonDim}`,
+                    }}
                   >
                     {action}
                   </button>
@@ -242,9 +255,10 @@ function WaveformAnimation({ isActive }: { isActive: boolean }) {
             ${isActive ? 'animate-waveform' : 'h-4'}
           `}
           style={{
-            backgroundColor: isActive ? COLORS.accent : '#E5E7EB',
+            backgroundColor: isActive ? COLORS.neonPrimary : COLORS.obsidian100,
             animationDelay: `${i * 0.1}s`,
             height: isActive ? undefined : '16px',
+            boxShadow: isActive ? `0 0 10px ${COLORS.neonPrimary}80` : 'none',
           }}
         />
       ))}
@@ -269,7 +283,7 @@ function WaveformAnimation({ isActive }: { isActive: boolean }) {
 // Standalone Waveform component for external use
 export function ListeningWaveform({ 
   isActive = true,
-  color = COLORS.accent,
+  color = COLORS.neonPrimary,
   barCount = 5,
   height = 64,
 }: {
@@ -283,12 +297,13 @@ export function ListeningWaveform({
       {Array.from({ length: barCount }).map((_, i) => (
         <div
           key={i}
-          className={`w-2 rounded-full transition-all duration-300 ${isActive ? '' : ''}`}
+          className="w-2 rounded-full transition-all duration-300"
           style={{
-            backgroundColor: isActive ? color : '#E5E7EB',
+            backgroundColor: isActive ? color : COLORS.obsidian100,
             height: isActive ? `${Math.random() * (height - 16) + 16}px` : '16px',
             animation: isActive ? `waveform-${i} 0.8s ease-in-out infinite` : 'none',
             animationDelay: `${i * 0.1}s`,
+            boxShadow: isActive ? `0 0 10px ${color}80` : 'none',
           }}
         />
       ))}
@@ -306,4 +321,3 @@ export function ListeningWaveform({
 }
 
 export default VoiceFloatingButton;
-

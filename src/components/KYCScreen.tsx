@@ -1,16 +1,15 @@
 // ============================================
-// KYC Screen - Cash App Inspired Design
-// Clean step-by-step flow with progress bar
+// KYC Screen - OBSIDIAN Neon-Noir Design
+// Deep black background, neon green accents
 // ============================================
 
 import { useState, useEffect } from 'react';
 import { Screen } from '../App';
-import { X, ArrowLeft, Loader2 } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 import { User } from '../types';
 import { useKYC } from '../hooks/useKYC';
 import { KYCStep1, KYCStep2, KYCStep3, KYCStep4, KYCSuccess } from './kyc';
 import { PillButton } from './ui/pill-button';
-import { ProgressDots } from './ui/progress-dots';
 
 interface KYCScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -80,27 +79,27 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-obsidian-100">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
+      <div className="flex items-center justify-between px-4 py-4 border-b" style={{ borderColor: 'var(--white-divider)' }}>
         <button
           onClick={handleBack}
-          className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full transition-colors"
+          className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors"
         >
           {kyc.currentStep === 1 ? (
-            <X className="w-6 h-6 text-black" />
+            <X className="w-6 h-6 text-white-high" />
           ) : (
-            <ArrowLeft className="w-6 h-6 text-black" />
+            <ArrowLeft className="w-6 h-6 text-white-high" />
           )}
         </button>
         <div className="flex-1 text-center">
-          <span className="text-sm text-gray-500 font-medium">
+          <span className="text-sm text-white-low font-medium">
             Step {kyc.currentStep} of 4
           </span>
         </div>
         <button
           onClick={handleSkip}
-          className="px-4 py-2 text-gray-500 text-sm font-medium hover:text-gray-700"
+          className="px-4 py-2 text-white-low text-sm font-medium hover:text-white-high transition-colors"
         >
           Skip
         </button>
@@ -113,7 +112,7 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
             <div
               key={step.id}
               className={`flex-1 h-1.5 rounded-full transition-all duration-300 ${
-                step.id <= kyc.currentStep ? 'bg-black' : 'bg-gray-200'
+                step.id <= kyc.currentStep ? 'bg-neon glow-neon-sm' : 'bg-obsidian-400'
               }`}
             />
           ))}
@@ -122,16 +121,16 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
         {/* Step Info */}
         <div className="flex items-center gap-3">
           <div 
-            className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
-            style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+            className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl glow-neon-sm"
+            style={{ backgroundColor: 'var(--neon-primary)' }}
           >
             {currentStepInfo?.icon}
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">
+            <h1 className="text-xl font-bold text-white-high">
               {currentStepInfo?.title}
             </h1>
-            <p className="text-gray-500 text-sm">
+            <p className="text-white-low text-sm">
               {kyc.currentStep === 1 && 'Enter your details as shown on MyKad'}
               {kyc.currentStep === 2 && 'Take clear photos of your ID'}
               {kyc.currentStep === 3 && 'Quick selfie to verify identity'}
@@ -142,7 +141,7 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 px-6 overflow-y-auto">
+      <div className="flex-1 px-6 overflow-y-auto scrollbar-obsidian">
         {kyc.currentStep === 1 && (
           <KYCStep1
             data={kyc.formData.step1}
@@ -180,13 +179,14 @@ export function KYCScreen({ navigateTo, onComplete, user }: KYCScreenProps) {
       </div>
 
       {/* Bottom Button */}
-      <div className="p-6 bg-white border-t border-gray-100">
+      <div className="p-6 bg-obsidian-200 border-t" style={{ borderColor: 'var(--white-divider)' }}>
         <PillButton
           onClick={handleNext}
           disabled={kyc.isLoading || !isCurrentStepValid()}
           isLoading={kyc.isLoading}
           className="w-full"
           size="lg"
+          variant="neon"
         >
           {kyc.currentStep === 4 ? 'Complete Verification' : 'Continue'}
         </PillButton>

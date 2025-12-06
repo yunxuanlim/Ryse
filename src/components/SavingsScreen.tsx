@@ -1,6 +1,6 @@
 // ============================================
-// Savings Screen - Cash App Inspired Design
-// Clean savings jars with gray bg, white cards
+// Savings Screen - OBSIDIAN Neon-Noir Design
+// Deep black background with neon accents
 // ============================================
 
 import { useState } from 'react';
@@ -55,26 +55,26 @@ export function SavingsScreen({ navigateTo }: SavingsScreenProps) {
   };
 
   return (
-    <div className="h-full flex flex-col bg-gray-50 overflow-y-auto pb-24">
+    <div className="h-full flex flex-col bg-obsidian-100 overflow-y-auto pb-24 scrollbar-obsidian">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-6">
+      <div className="bg-obsidian-200 px-4 pt-4 pb-6 border-b" style={{ borderColor: 'var(--white-divider)' }}>
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 flex items-center justify-center hover:bg-gray-100 rounded-full"
+            className="w-10 h-10 flex items-center justify-center hover:bg-obsidian-300 rounded-full transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-black" />
+            <ArrowLeft className="w-6 h-6 text-white-high" />
           </button>
-          <h1 className="text-xl font-bold text-gray-900">Savings</h1>
+          <h1 className="text-xl font-bold text-white-high">Savings</h1>
         </div>
 
         {/* Total Savings Card */}
-        <div className="bg-gray-50 rounded-3xl p-6 text-center">
-          <p className="text-gray-500 text-sm mb-1">Total savings</p>
-          <h2 className="text-5xl font-bold text-gray-900 mb-2">
+        <div className="card-obsidian text-center">
+          <p className="text-white-low text-sm mb-1">Total savings</p>
+          <h2 className="text-5xl font-bold text-neon mb-2 font-mono-nums text-glow">
             RM {totalSaved.toLocaleString()}
           </h2>
-          <div className="flex items-center justify-center gap-2 text-green-600 text-sm font-medium">
+          <div className="flex items-center justify-center gap-2 text-neon text-sm font-medium">
             <TrendingUp className="w-4 h-4" />
             <span>Earning {interestRate}% APY</span>
           </div>
@@ -83,120 +83,78 @@ export function SavingsScreen({ navigateTo }: SavingsScreenProps) {
 
       {/* Content */}
       <div className="px-4 pt-4 space-y-4">
-        {/* Interest Banner */}
-        <div 
-          className="rounded-3xl p-5 shadow-sm flex items-center gap-4"
-          style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+        {/* New Goal Button */}
+        <button
+          onClick={() => setShowNewJar(true)}
+          className="w-full card-obsidian flex items-center gap-4 hover:bg-obsidian-300 transition-colors"
         >
-          <div className="text-3xl">💰</div>
-          <div className="flex-1">
-            <p className="font-bold text-gray-900">Earn up to {interestRate}%</p>
-            <p className="text-gray-700 text-sm">On all your savings with RYSE</p>
+          <div className="w-12 h-12 rounded-full flex items-center justify-center glow-neon-sm" style={{ backgroundColor: 'var(--neon-primary)' }}>
+            <Plus className="w-6 h-6 text-obsidian-100" />
           </div>
-        </div>
+          <div className="flex-1 text-left">
+            <p className="text-white-high font-semibold">Create new goal</p>
+            <p className="text-white-low text-sm">Set up automatic savings</p>
+          </div>
+          <ChevronRight className="w-5 h-5 text-white-low" />
+        </button>
 
         {/* Savings Jars */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between px-1">
-            <h3 className="font-semibold text-gray-900">Your goals</h3>
-            <button 
-              onClick={() => setShowNewJar(true)}
-              className="text-sm text-gray-600 font-medium flex items-center gap-1"
-            >
-              <Plus className="w-4 h-4" /> New goal
-            </button>
-          </div>
-
-          {savingsJars.map((jar) => {
-            const progress = (jar.current / jar.goal) * 100;
-            return (
-              <div key={jar.id} className="bg-white rounded-3xl p-5 shadow-sm">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center text-2xl">
-                    {jar.emoji}
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-gray-900">{jar.name}</p>
-                    <p className="text-gray-500 text-sm">
-                      RM {jar.current.toLocaleString()} of RM {jar.goal.toLocaleString()}
-                    </p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
+        <h3 className="text-white-high font-semibold px-1 pt-2">Your Goals</h3>
+        {savingsJars.map((jar) => {
+          const progress = (jar.current / jar.goal) * 100;
+          
+          return (
+            <div key={jar.id} className="card-obsidian">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 bg-obsidian-300 rounded-full flex items-center justify-center text-xl">
+                  {jar.emoji}
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className="h-2 bg-black rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(progress, 100)}%` }}
-                  />
+                <div className="flex-1">
+                  <p className="text-white-high font-medium">{jar.name}</p>
+                  <p className="text-white-low text-sm">
+                    RM {jar.current.toLocaleString()} of RM {jar.goal.toLocaleString()}
+                  </p>
                 </div>
-                <p className="text-right text-xs text-gray-400 mt-2">
-                  {Math.round(progress)}% complete
-                </p>
+                <span className="text-neon text-sm font-medium">{progress.toFixed(0)}%</span>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Quick Add Card */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm">
-          <p className="text-gray-500 text-sm mb-3">Quick deposit</p>
-          <div className="flex gap-2">
-            {[50, 100, 200, 500].map((amount) => (
-              <button
-                key={amount}
-                className="flex-1 py-3 bg-gray-100 rounded-xl font-medium text-gray-900 hover:bg-gray-200 transition-colors"
-              >
-                RM {amount}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Streak */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="text-3xl">🔥</div>
-              <div>
-                <p className="font-semibold text-gray-900">47 day streak</p>
-                <p className="text-gray-500 text-sm">Keep saving daily!</p>
+              <div className="w-full bg-obsidian-300 rounded-full h-2">
+                <div 
+                  className="h-2 rounded-full transition-all duration-500 glow-neon-sm"
+                  style={{ width: `${progress}%`, backgroundColor: 'var(--neon-primary)' }}
+                />
               </div>
             </div>
-            <div className="flex gap-1">
-              {['🔥', '💪', '🏆'].map((badge, i) => (
-                <span key={i} className={`text-xl ${i === 2 ? 'opacity-30' : ''}`}>
-                  {badge}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
       {/* New Jar Modal */}
       {showNewJar && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end">
-          <div className="bg-white w-full rounded-t-3xl p-6 animate-slide-up">
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-end justify-center">
+          <div className="bg-obsidian-200 w-full max-w-md rounded-t-3xl p-6 border-t" style={{ borderColor: 'var(--white-divider)' }}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">New savings goal</h2>
-              <button 
+              <h3 className="text-xl font-bold text-white-high">New savings goal</h3>
+              <button
                 onClick={() => setShowNewJar(false)}
-                className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center"
+                className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-obsidian-300"
               >
-                <X className="w-5 h-5 text-gray-600" />
+                <X className="w-6 h-6 text-white-high" />
               </button>
             </div>
 
             <div className="space-y-4">
+              {/* Emoji Picker */}
               <div>
-                <label className="block text-sm text-gray-600 mb-2">Choose an emoji</label>
-                <div className="flex flex-wrap gap-2">
+                <label className="text-white-low text-sm block mb-2">Choose an icon</label>
+                <div className="flex gap-2 flex-wrap">
                   {emojiOptions.map((emoji) => (
                     <button
                       key={emoji}
                       onClick={() => setNewJarEmoji(emoji)}
-                      className={`w-12 h-12 rounded-xl text-2xl flex items-center justify-center transition-all ${
-                        newJarEmoji === emoji ? 'bg-black text-white' : 'bg-gray-100'
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all ${
+                        newJarEmoji === emoji 
+                          ? 'bg-neon' 
+                          : 'bg-obsidian-300 hover:bg-obsidian-400'
                       }`}
                     >
                       {emoji}
@@ -205,27 +163,29 @@ export function SavingsScreen({ navigateTo }: SavingsScreenProps) {
                 </div>
               </div>
 
+              {/* Name Input */}
               <div>
-                <label className="block text-sm text-gray-600 mb-2">Goal name</label>
+                <label className="text-white-low text-sm block mb-2">Goal name</label>
                 <input
                   type="text"
                   value={newJarName}
                   onChange={(e) => setNewJarName(e.target.value)}
-                  placeholder="e.g., New Car"
-                  className="w-full px-4 py-3 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
+                  placeholder="e.g., New Laptop"
+                  className="input-obsidian w-full"
                 />
               </div>
 
+              {/* Amount Input */}
               <div>
-                <label className="block text-sm text-gray-600 mb-2">Target amount</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">RM</span>
+                <label className="text-white-low text-sm block mb-2">Target amount</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-white-high font-medium">RM</span>
                   <input
                     type="number"
                     value={newJarGoal}
                     onChange={(e) => setNewJarGoal(e.target.value)}
-                    placeholder="0"
-                    className="w-full px-4 py-3 pl-12 bg-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
+                    placeholder="5000"
+                    className="input-obsidian flex-1"
                   />
                 </div>
               </div>
@@ -233,41 +193,16 @@ export function SavingsScreen({ navigateTo }: SavingsScreenProps) {
               <PillButton
                 onClick={handleCreateJar}
                 disabled={!newJarName || !newJarGoal}
-                className="w-full"
+                className="w-full mt-4"
                 size="lg"
+                variant="neon"
               >
-                Create goal
+                Create Goal
               </PillButton>
             </div>
           </div>
         </div>
       )}
-
-      {/* Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-8 py-4 max-w-md mx-auto">
-        <div className="flex justify-around">
-          <button onClick={() => navigateTo('dashboard')} className="text-gray-400 text-sm">
-            Money
-          </button>
-          <button onClick={() => navigateTo('ryscore')} className="text-gray-400 text-sm">
-            Score
-          </button>
-          <button className="text-black font-semibold text-sm border-b-2 border-black pb-1">
-            Savings
-          </button>
-        </div>
-      </div>
-
-      {/* Animation styles */}
-      <style>{`
-        @keyframes slide-up {
-          from { transform: translateY(100%); }
-          to { transform: translateY(0); }
-        }
-        .animate-slide-up {
-          animation: slide-up 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }

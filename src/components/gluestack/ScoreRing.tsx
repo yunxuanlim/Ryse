@@ -1,10 +1,23 @@
 // ============================================
-// ScoreRing Component - Gluestack Style
-// Circular progress indicator with score color-coding
-// Green > 700, Yellow > 500, Red <= 500
+// ScoreRing Component - Project Obsidian
+// Neon-Noir Dark Theme circular progress
 // ============================================
 
 import { useEffect, useState } from 'react';
+
+// Obsidian Theme Colors
+const COLORS = {
+  obsidian100: '#060606',
+  obsidian200: '#121212',
+  neonPrimary: '#39FF14',
+  neonDim: '#1B7A0F',
+  whiteHigh: '#FFFFFF',
+  whiteMedium: 'rgba(255,255,255,0.87)',
+  whiteLow: 'rgba(255,255,255,0.60)',
+  scoreGreen: '#39FF14',
+  scoreYellow: '#FFD300',
+  scoreRed: '#FF4444',
+};
 
 interface ScoreRingProps {
   score: number;
@@ -15,16 +28,6 @@ interface ScoreRingProps {
   animated?: boolean;
   strokeWidth?: number;
 }
-
-// RYSE Branding Colors
-const COLORS = {
-  primary: '#0052FF',    // Primary Blue
-  accent: '#FFD300',     // Yellow
-  green: '#22C55E',      // Success Green
-  yellow: '#EAB308',     // Warning Yellow  
-  red: '#EF4444',        // Danger Red
-  gray: '#E5E7EB',       // Track color
-};
 
 export function ScoreRing({
   score,
@@ -58,9 +61,9 @@ export function ScoreRing({
 
   // Determine color based on score
   const getScoreColor = (score: number): string => {
-    if (score > 700) return COLORS.green;
-    if (score > 500) return COLORS.yellow;
-    return COLORS.red;
+    if (score > 700) return COLORS.scoreGreen;
+    if (score > 500) return COLORS.scoreYellow;
+    return COLORS.scoreRed;
   };
 
   const scoreColor = getScoreColor(score);
@@ -77,6 +80,7 @@ export function ScoreRing({
     const duration = 1500;
     const startTime = Date.now();
     const startScore = 300;
+    let animationFrameId: number;
 
     const animate = () => {
       const elapsed = Date.now() - startTime;
@@ -89,11 +93,15 @@ export function ScoreRing({
       setAnimatedScore(currentScore);
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        animationFrameId = requestAnimationFrame(animate);
       }
     };
 
-    requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animate);
+    
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
   }, [score, animated]);
 
   // Get tier label based on score
@@ -126,7 +134,7 @@ export function ScoreRing({
           cy={config.height / 2}
           r={radius}
           fill="none"
-          stroke={COLORS.gray}
+          stroke={COLORS.obsidian100}
           strokeWidth={config.stroke}
         />
         
@@ -143,18 +151,24 @@ export function ScoreRing({
           strokeDashoffset={animated ? strokeDashoffset : circumference * (1 - progress)}
           className="transition-all duration-1000 ease-out"
           style={{
-            filter: `drop-shadow(0 0 6px ${scoreColor}40)`,
+            filter: `drop-shadow(0 0 10px ${scoreColor}80)`,
           }}
         />
       </svg>
 
       {/* Center Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className={`font-bold text-gray-900 tabular-nums ${config.fontSize}`}>
+        <span 
+          className={`font-bold tabular-nums ${config.fontSize}`}
+          style={{ 
+            color: scoreColor,
+            textShadow: `0 0 15px ${scoreColor}50`,
+          }}
+        >
           {animatedScore}
         </span>
         {showLabel && (
-          <span className={`text-gray-500 ${config.labelSize}`}>
+          <span className={`${config.labelSize}`} style={{ color: COLORS.whiteLow }}>
             {label}
           </span>
         )}
@@ -167,6 +181,7 @@ export function ScoreRing({
           style={{ 
             backgroundColor: `${scoreColor}20`,
             color: scoreColor,
+            border: `1px solid ${scoreColor}40`,
           }}
         >
           <span>{tier.emoji}</span>
@@ -191,10 +206,12 @@ export function ScoreRingCompact({
   const strokeDashoffset = circumference * (1 - progress);
 
   const getColor = (score: number) => {
-    if (score > 700) return COLORS.green;
-    if (score > 500) return COLORS.yellow;
-    return COLORS.red;
+    if (score > 700) return COLORS.scoreGreen;
+    if (score > 500) return COLORS.scoreYellow;
+    return COLORS.scoreRed;
   };
+
+  const color = getColor(score);
 
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
@@ -204,7 +221,7 @@ export function ScoreRingCompact({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={COLORS.gray}
+          stroke={COLORS.obsidian100}
           strokeWidth={4}
         />
         <circle
@@ -212,17 +229,22 @@ export function ScoreRingCompact({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={getColor(score)}
+          stroke={color}
           strokeWidth={4}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
+          style={{ filter: `drop-shadow(0 0 5px ${color}80)` }}
         />
       </svg>
-      <span className="absolute text-xs font-bold text-gray-900">{score}</span>
+      <span 
+        className="absolute text-xs font-bold"
+        style={{ color }}
+      >
+        {score}
+      </span>
     </div>
   );
 }
 
 export default ScoreRing;
-

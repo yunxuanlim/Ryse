@@ -1,12 +1,23 @@
 // ============================================
-// KYC Success Screen - Cash App Inspired
-// Green checkmark with stroke animation
+// KYC Success Screen - Project Obsidian
+// Neon-Noir Dark Theme with animations
 // ============================================
 
 import { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { RyScoreCalculation, RyScoreTier } from '../../types';
 import { PillButton } from '../ui/pill-button';
+
+// Obsidian Theme Colors
+const COLORS = {
+  obsidian100: '#060606',
+  obsidian200: '#121212',
+  neonPrimary: '#39FF14',
+  neonDim: '#1B7A0F',
+  whiteHigh: '#FFFFFF',
+  whiteMedium: 'rgba(255,255,255,0.87)',
+  whiteLow: 'rgba(255,255,255,0.60)',
+};
 
 interface KYCSuccessProps {
   ryscore: RyScoreCalculation | null;
@@ -61,7 +72,7 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
     switch (tier) {
       case 'Platinum': return { emoji: '💎', label: 'Platinum', color: '#8B5CF6' };
       case 'Gold': return { emoji: '🥇', label: 'Gold', color: '#F59E0B' };
-      case 'Silver': return { emoji: '🥈', label: 'Silver', color: '#6B7280' };
+      case 'Silver': return { emoji: '🥈', label: 'Silver', color: '#9CA3AF' };
       default: return { emoji: '🥉', label: 'Bronze', color: '#92400E' };
     }
   };
@@ -69,7 +80,7 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
   const tierInfo = getTierInfo(tier);
 
   return (
-    <div className="h-full bg-white flex flex-col">
+    <div className="h-full flex flex-col" style={{ backgroundColor: COLORS.obsidian100 }}>
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center px-6">
         {/* Animated Checkmark */}
@@ -84,20 +95,21 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
               cy="50"
               r="45"
               fill="none"
-              stroke="#22C55E"
+              stroke={COLORS.neonPrimary}
               strokeWidth="3"
               strokeLinecap="round"
               className="animate-draw-circle"
               style={{
                 strokeDasharray: 283,
                 strokeDashoffset: 283,
+                filter: `drop-shadow(0 0 10px ${COLORS.neonPrimary})`,
               }}
             />
             {/* Checkmark */}
             <path
               d="M30 52 L45 67 L72 35"
               fill="none"
-              stroke="#22C55E"
+              stroke={COLORS.neonPrimary}
               strokeWidth="4"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -105,6 +117,7 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
               style={{
                 strokeDasharray: 70,
                 strokeDashoffset: 70,
+                filter: `drop-shadow(0 0 10px ${COLORS.neonPrimary})`,
               }}
             />
           </svg>
@@ -112,49 +125,70 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
 
         {/* Welcome Text */}
         <h1 
-          className={`text-3xl font-bold text-gray-900 text-center mb-2 transition-all duration-500 ${
+          className={`text-3xl font-bold text-center mb-2 transition-all duration-500 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
+          style={{ color: COLORS.whiteHigh }}
         >
           Welcome to RYSE!
         </h1>
         <p 
-          className={`text-gray-500 text-center mb-8 transition-all duration-500 delay-100 ${
+          className={`text-center mb-8 transition-all duration-500 delay-100 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
+          style={{ color: COLORS.whiteLow }}
         >
           {userName.split(' ')[0]}, you're all set
         </p>
 
         {/* RyScore Card */}
         <div 
-          className={`w-full max-w-sm bg-gray-50 rounded-3xl p-6 mb-6 transition-all duration-500 delay-200 ${
+          className={`w-full max-w-sm rounded-3xl p-6 mb-6 transition-all duration-500 delay-200 ${
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
+          style={{ 
+            backgroundColor: COLORS.obsidian200,
+            border: `1px solid ${COLORS.neonDim}`,
+          }}
         >
-          <p className="text-gray-500 text-sm text-center mb-2">Your RyScore</p>
+          <p className="text-sm text-center mb-2" style={{ color: COLORS.whiteLow }}>Your RyScore</p>
           <div className="text-center mb-4">
-            <span className="text-6xl font-bold text-gray-900 tabular-nums">{animatedScore}</span>
+            <span 
+              className="text-6xl font-bold tabular-nums"
+              style={{ 
+                color: COLORS.neonPrimary,
+                textShadow: `0 0 20px ${COLORS.neonPrimary}50`,
+              }}
+            >
+              {animatedScore}
+            </span>
           </div>
           
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="text-2xl">{tierInfo.emoji}</span>
             <span 
               className="text-lg font-semibold px-3 py-1 rounded-full"
-              style={{ backgroundColor: `${tierInfo.color}20`, color: tierInfo.color }}
+              style={{ backgroundColor: `${tierInfo.color}30`, color: tierInfo.color }}
             >
               {tierInfo.label}
             </span>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+          <div 
+            className="w-full rounded-full h-2 mb-2"
+            style={{ backgroundColor: COLORS.obsidian100 }}
+          >
             <div 
-              className="h-2 bg-black rounded-full transition-all duration-1000"
-              style={{ width: `${((animatedScore - 300) / 550) * 100}%` }}
+              className="h-2 rounded-full transition-all duration-1000"
+              style={{ 
+                width: `${((animatedScore - 300) / 550) * 100}%`,
+                backgroundColor: COLORS.neonPrimary,
+                boxShadow: `0 0 10px ${COLORS.neonPrimary}`,
+              }}
             />
           </div>
-          <div className="flex justify-between text-xs text-gray-400">
+          <div className="flex justify-between text-xs" style={{ color: COLORS.whiteLow }}>
             <span>300</span>
             <span>850</span>
           </div>
@@ -163,7 +197,7 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
         {/* Benefits */}
         {showBenefits && (
           <div className="w-full max-w-sm space-y-2">
-            <p className="text-gray-500 text-sm mb-3 text-center">What's unlocked for you</p>
+            <p className="text-sm mb-3 text-center" style={{ color: COLORS.whiteLow }}>What's unlocked for you</p>
             {[
               { emoji: '💰', text: 'Up to RM 1,000 credit available' },
               { emoji: '⚡', text: 'Instant loan approvals' },
@@ -171,12 +205,15 @@ export function KYCSuccess({ ryscore, userName, onContinue }: KYCSuccessProps) {
             ].map((benefit, i) => (
               <div 
                 key={i}
-                className="flex items-center gap-3 bg-gray-50 rounded-2xl p-4 animate-fade-in"
-                style={{ animationDelay: `${i * 150}ms` }}
+                className="flex items-center gap-3 rounded-2xl p-4 animate-fade-in"
+                style={{ 
+                  backgroundColor: COLORS.obsidian200,
+                  animationDelay: `${i * 150}ms`,
+                }}
               >
                 <span className="text-xl">{benefit.emoji}</span>
-                <span className="text-gray-700 text-sm flex-1">{benefit.text}</span>
-                <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="text-sm flex-1" style={{ color: COLORS.whiteMedium }}>{benefit.text}</span>
+                <svg className="w-5 h-5" fill="none" stroke={COLORS.neonPrimary} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
                 </svg>
               </div>

@@ -1,83 +1,116 @@
 // ============================================
-// RYSE Theme Configuration - Gluestack Style
-// Centralized branding colors and tokens
+// RYSE Theme Configuration - OBSIDIAN EDITION
+// Strict Green/White/Black Color Palette
+// Project Obsidian - Neon-Noir Aesthetic
 // ============================================
 
+/**
+ * STRICT PALETTE RULES:
+ * - Only #060606, #121212, #39FF14, and white variants allowed
+ * - NO grays, blues, purples, or other colors
+ * - Use opacity variants of white for text hierarchy
+ */
+
 export const RyseTheme = {
-  // Brand Colors
+  // Brand Colors - OBSIDIAN PALETTE
   colors: {
-    // Primary - Blue for headers, CTAs
+    // Obsidian Backgrounds
+    obsidian: {
+      100: '#060606', // Main background
+      200: '#121212', // Surface/Cards
+      300: '#1A1A1A', // Elevated surfaces
+      400: '#242424', // Hover states
+    },
+
+    // Neon Green - Primary action color
+    neon: {
+      primary: '#39FF14', // Main neon green
+      dim: '#1B7A0F',     // Inactive/decorative
+      bright: '#4AFF26',  // Hover states
+      glow: 'rgba(57, 255, 20, 0.5)',
+    },
+
+    // White variants for text hierarchy
+    white: {
+      high: '#FFFFFF',                    // 100% - Headings
+      med: 'rgba(255, 255, 255, 0.87)',   // 87% - Body text
+      low: 'rgba(255, 255, 255, 0.60)',   // 60% - Secondary
+      muted: 'rgba(255, 255, 255, 0.38)', // 38% - Disabled
+      divider: 'rgba(255, 255, 255, 0.12)', // Dividers
+    },
+
+    // Pure values
+    black: '#000000',
+    white100: '#FFFFFF',
+
+    // Legacy mappings for compatibility (map to Obsidian)
     primary: {
-      50: '#E6EEFF',
-      100: '#CCE0FF',
-      200: '#99C2FF',
-      300: '#66A3FF',
-      400: '#3385FF',
-      500: '#0052FF',  // Main Primary Blue
-      600: '#0042CC',
-      700: '#003199',
-      800: '#002166',
-      900: '#001033',
+      50: '#1B7A0F',
+      100: '#1B7A0F',
+      200: '#1B7A0F',
+      300: '#2ECC40',
+      400: '#39FF14',
+      500: '#39FF14',  // Main Neon Green
+      600: '#4AFF26',
+      700: '#4AFF26',
+      800: '#4AFF26',
+      900: '#4AFF26',
     },
-    
-    // Accent - Yellow for Voice Button, highlights
+
+    // Accent - Same as primary in Obsidian (neon green)
     accent: {
-      50: '#FFFCE6',
-      100: '#FFF9CC',
-      200: '#FFF399',
-      300: '#FFEC66',
-      400: '#FFE633',
-      500: '#FFD300',  // Main Yellow
-      600: '#CCAA00',
-      700: '#998000',
-      800: '#665500',
-      900: '#332B00',
+      50: '#1B7A0F',
+      100: '#1B7A0F',
+      200: '#1B7A0F',
+      300: '#2ECC40',
+      400: '#39FF14',
+      500: '#39FF14',  // Main Neon Green
+      600: '#4AFF26',
+      700: '#4AFF26',
+      800: '#4AFF26',
+      900: '#4AFF26',
     },
-    
-    // Semantic Colors
+
+    // Semantic Colors - Mapped to strict palette
     success: {
-      light: '#D1FAE5',
-      main: '#22C55E',
-      dark: '#15803D',
+      light: 'rgba(57, 255, 20, 0.2)',
+      main: '#39FF14',  // Neon green
+      dark: '#1B7A0F',
     },
     warning: {
-      light: '#FEF3C7',
-      main: '#EAB308',
-      dark: '#A16207',
+      light: 'rgba(255, 255, 255, 0.2)',
+      main: '#FFFFFF',  // White for warnings (use alert pattern)
+      dark: 'rgba(255, 255, 255, 0.87)',
     },
     error: {
-      light: '#FEE2E2',
-      main: '#EF4444',
-      dark: '#B91C1C',
+      light: 'rgba(255, 255, 255, 0.2)',
+      main: '#FFFFFF',  // White for errors (use alert pattern)
+      dark: 'rgba(255, 255, 255, 0.87)',
     },
-    
-    // Neutrals
+
+    // Gray scale - Map to obsidian scale
     gray: {
-      50: '#F9FAFB',
-      100: '#F3F4F6',
-      200: '#E5E7EB',
-      300: '#D1D5DB',
-      400: '#9CA3AF',
-      500: '#6B7280',
-      600: '#4B5563',
-      700: '#374151',
-      800: '#1F2937',
-      900: '#111827',
+      50: '#242424',
+      100: '#1A1A1A',
+      200: '#121212',
+      300: '#121212',
+      400: 'rgba(255, 255, 255, 0.38)',
+      500: 'rgba(255, 255, 255, 0.60)',
+      600: 'rgba(255, 255, 255, 0.60)',
+      700: 'rgba(255, 255, 255, 0.87)',
+      800: 'rgba(255, 255, 255, 0.87)',
+      900: '#FFFFFF',
     },
-    
-    // Special
-    black: '#000000',
-    white: '#FFFFFF',
-    
-    // RyScore Colors
+
+    // RyScore Colors - Neon variants
     ryscore: {
-      platinum: '#8B5CF6',
-      gold: '#F59E0B',
-      silver: '#6B7280',
-      bronze: '#92400E',
+      platinum: '#39FF14', // All tiers use neon green
+      gold: '#39FF14',
+      silver: '#1B7A0F',
+      bronze: '#1B7A0F',
     },
   },
-  
+
   // Spacing Scale
   spacing: {
     0: '0px',
@@ -93,7 +126,7 @@ export const RyseTheme = {
     16: '64px',
     20: '80px',
   },
-  
+
   // Border Radius
   radii: {
     none: '0px',
@@ -105,7 +138,7 @@ export const RyseTheme = {
     '3xl': '24px',
     full: '9999px',
   },
-  
+
   // Font Sizes
   fontSizes: {
     xs: '12px',
@@ -118,7 +151,7 @@ export const RyseTheme = {
     '4xl': '36px',
     '5xl': '48px',
   },
-  
+
   // Font Weights
   fontWeights: {
     normal: '400',
@@ -126,17 +159,35 @@ export const RyseTheme = {
     semibold: '600',
     bold: '700',
   },
-  
-  // Shadows
+
+  // Shadows - Neon glow effects
   shadows: {
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-    '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    // Brand shadows
-    primary: '0 8px 32px rgba(0, 82, 255, 0.3)',
-    accent: '0 8px 32px rgba(255, 211, 0, 0.4)',
+    sm: '0 0 10px rgba(57, 255, 20, 0.3)',
+    md: '0 0 20px rgba(57, 255, 20, 0.4)',
+    lg: '0 0 30px rgba(57, 255, 20, 0.5)',
+    xl: '0 0 40px rgba(57, 255, 20, 0.6)',
+    '2xl': '0 0 50px rgba(57, 255, 20, 0.7)',
+    // Neon glow shadows
+    neon: '0 0 20px rgba(57, 255, 20, 0.4)',
+    neonLg: '0 0 40px rgba(57, 255, 20, 0.6)',
+    // Glass shadow
+    glass: '0 20px 40px rgba(0, 0, 0, 0.4)',
+    // Text glow
+    textGlow: '0 0 10px rgba(57, 255, 20, 0.8), 0 0 20px rgba(57, 255, 20, 0.4)',
+  },
+
+  // Glassmorphism
+  glass: {
+    background: 'rgba(10, 10, 10, 0.7)',
+    backdropBlur: 'blur(30px) saturate(180%)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+  },
+
+  // Transitions
+  transitions: {
+    fast: '100ms cubic-bezier(0.2, 0.0, 0.2, 1.0)',
+    normal: '200ms cubic-bezier(0.2, 0.0, 0.2, 1.0)',
+    slow: '300ms cubic-bezier(0.2, 0.0, 0.2, 1.0)',
   },
 } as const;
 
@@ -146,57 +197,76 @@ export type RyseSpacing = typeof RyseTheme.spacing;
 
 // Helper functions
 export const getScoreColor = (score: number): string => {
-  if (score > 700) return RyseTheme.colors.success.main;
-  if (score > 500) return RyseTheme.colors.warning.main;
-  return RyseTheme.colors.error.main;
+  // All scores return neon green in Obsidian theme
+  if (score > 700) return RyseTheme.colors.neon.primary;
+  if (score > 500) return RyseTheme.colors.neon.primary;
+  return RyseTheme.colors.neon.dim;
 };
 
 export const getScoreTier = (score: number): { name: string; color: string; emoji: string } => {
-  if (score >= 750) return { 
-    name: 'Platinum', 
-    color: RyseTheme.colors.ryscore.platinum, 
-    emoji: '💎' 
+  // All tiers use neon green variants
+  if (score >= 750) return {
+    name: 'Platinum',
+    color: RyseTheme.colors.neon.primary,
+    emoji: '💎'
   };
-  if (score >= 650) return { 
-    name: 'Gold', 
-    color: RyseTheme.colors.ryscore.gold, 
-    emoji: '🥇' 
+  if (score >= 650) return {
+    name: 'Gold',
+    color: RyseTheme.colors.neon.primary,
+    emoji: '🥇'
   };
-  if (score >= 550) return { 
-    name: 'Silver', 
-    color: RyseTheme.colors.ryscore.silver, 
-    emoji: '🥈' 
+  if (score >= 550) return {
+    name: 'Silver',
+    color: RyseTheme.colors.neon.dim,
+    emoji: '🥈'
   };
-  return { 
-    name: 'Bronze', 
-    color: RyseTheme.colors.ryscore.bronze, 
-    emoji: '🥉' 
+  return {
+    name: 'Bronze',
+    color: RyseTheme.colors.neon.dim,
+    emoji: '🥉'
   };
 };
 
-// CSS Variables for global use
+// CSS Variables for global use - OBSIDIAN
 export const cssVariables = `
   :root {
-    /* Primary */
-    --ryse-primary: ${RyseTheme.colors.primary[500]};
-    --ryse-primary-light: ${RyseTheme.colors.primary[100]};
-    --ryse-primary-dark: ${RyseTheme.colors.primary[700]};
+    /* Obsidian Backgrounds */
+    --obsidian-100: ${RyseTheme.colors.obsidian[100]};
+    --obsidian-200: ${RyseTheme.colors.obsidian[200]};
+    --obsidian-300: ${RyseTheme.colors.obsidian[300]};
+    --obsidian-400: ${RyseTheme.colors.obsidian[400]};
     
-    /* Accent */
-    --ryse-accent: ${RyseTheme.colors.accent[500]};
-    --ryse-accent-light: ${RyseTheme.colors.accent[100]};
-    --ryse-accent-dark: ${RyseTheme.colors.accent[700]};
+    /* Neon Green */
+    --neon-primary: ${RyseTheme.colors.neon.primary};
+    --neon-dim: ${RyseTheme.colors.neon.dim};
+    --neon-bright: ${RyseTheme.colors.neon.bright};
+    --neon-glow: ${RyseTheme.colors.neon.glow};
     
-    /* Semantic */
-    --ryse-success: ${RyseTheme.colors.success.main};
-    --ryse-warning: ${RyseTheme.colors.warning.main};
-    --ryse-error: ${RyseTheme.colors.error.main};
+    /* White Variants */
+    --white-high: ${RyseTheme.colors.white.high};
+    --white-med: ${RyseTheme.colors.white.med};
+    --white-low: ${RyseTheme.colors.white.low};
+    --white-muted: ${RyseTheme.colors.white.muted};
+    --white-divider: ${RyseTheme.colors.white.divider};
     
     /* Shadows */
-    --ryse-shadow-primary: ${RyseTheme.shadows.primary};
-    --ryse-shadow-accent: ${RyseTheme.shadows.accent};
+    --shadow-neon-sm: ${RyseTheme.shadows.sm};
+    --shadow-neon-md: ${RyseTheme.shadows.md};
+    --shadow-neon-lg: ${RyseTheme.shadows.lg};
+    --shadow-text-glow: ${RyseTheme.shadows.textGlow};
+    
+    /* Glass */
+    --glass-bg: ${RyseTheme.glass.background};
+    --glass-blur: ${RyseTheme.glass.backdropBlur};
+    --glass-border: ${RyseTheme.glass.border};
+    --glass-shadow: ${RyseTheme.shadows.glass};
+    
+    /* Legacy compatibility */
+    --ryse-primary: ${RyseTheme.colors.neon.primary};
+    --ryse-accent: ${RyseTheme.colors.neon.primary};
+    --ryse-success: ${RyseTheme.colors.neon.primary};
+    --ryse-green: ${RyseTheme.colors.neon.primary};
   }
 `;
 
 export default RyseTheme;
-
