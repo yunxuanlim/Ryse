@@ -1,5 +1,10 @@
+// ============================================
+// Education Screen - Cash App Inspired
+// Clean white cards, black accents
+// ============================================
+
 import { Screen } from '../App';
-import { ArrowLeft, GraduationCap, Play, Clock, Award, TrendingUp, PiggyBank, FileText } from 'lucide-react';
+import { ArrowLeft, GraduationCap, Play, Clock, Award, TrendingUp, PiggyBank, FileText, CheckCircle, ChevronRight } from 'lucide-react';
 
 interface EducationScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -13,8 +18,7 @@ export function EducationScreen({ navigateTo }: EducationScreenProps) {
       duration: '4 min',
       completed: false,
       icon: TrendingUp,
-      color: 'from-purple-500 to-blue-500',
-      bgColor: 'bg-purple-50',
+      emoji: '📈',
       difficulty: 'Beginner',
       recommended: true
     },
@@ -24,8 +28,7 @@ export function EducationScreen({ navigateTo }: EducationScreenProps) {
       duration: '5 min',
       completed: false,
       icon: FileText,
-      color: 'from-blue-500 to-cyan-500',
-      bgColor: 'bg-blue-50',
+      emoji: '📄',
       difficulty: 'Intermediate',
       recommended: true
     },
@@ -35,8 +38,7 @@ export function EducationScreen({ navigateTo }: EducationScreenProps) {
       duration: '3 min',
       completed: true,
       icon: PiggyBank,
-      color: 'from-cyan-500 to-teal-500',
-      bgColor: 'bg-cyan-50',
+      emoji: '🐷',
       difficulty: 'Beginner',
       recommended: false
     },
@@ -46,8 +48,7 @@ export function EducationScreen({ navigateTo }: EducationScreenProps) {
       duration: '6 min',
       completed: false,
       icon: GraduationCap,
-      color: 'from-teal-500 to-green-500',
-      bgColor: 'bg-teal-50',
+      emoji: '💡',
       difficulty: 'Intermediate',
       recommended: false
     }
@@ -57,137 +58,143 @@ export function EducationScreen({ navigateTo }: EducationScreenProps) {
   const progress = (completedCount / courses.length) * 100;
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-y-auto">
+    <div className="h-full flex flex-col bg-gray-50 overflow-y-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 rounded-b-3xl shadow-xl">
-        <div className="flex items-center gap-4 mb-6">
+      <div className="bg-white px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className="w-6 h-6 text-black" />
           </button>
-          <div>
-            <h2 className="text-white">Financial Education</h2>
-            <p className="text-purple-200 text-sm">Level Up Your Money Skills</p>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-gray-900">Learn</h2>
+            <p className="text-gray-500 text-sm">Level up your money skills</p>
           </div>
-        </div>
-
-        {/* Learning Progress */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-purple-200 text-sm mb-1">Your Progress</p>
-              <h3 className="text-white">{completedCount} of {courses.length} courses</h3>
-            </div>
-            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
-              <Award className="w-8 h-8 text-white" />
-            </div>
+          <div 
+            className="w-10 h-10 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+          >
+            <GraduationCap className="w-5 h-5 text-black" />
           </div>
-
-          <div className="w-full bg-white/20 rounded-full h-3 mb-2">
-            <div 
-              className="bg-white h-3 rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-          <p className="text-purple-200 text-sm">{Math.round(progress)}% complete</p>
         </div>
       </div>
 
-      {/* AI Recommendations */}
-      <div className="px-6 py-6">
-        <div className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-2xl p-5 shadow-lg border border-amber-200">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <GraduationCap className="w-5 h-5 text-white" />
-            </div>
+      {/* Progress Card */}
+      <div className="px-4 pt-4">
+        <div className="bg-white rounded-3xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h4 className="text-amber-900 mb-1">AI Recommendation</h4>
-              <p className="text-amber-700 text-sm mb-3">Based on your RyScore and savings habits, we recommend starting with "How to Improve Your RyScore".</p>
-              <button className="text-amber-900 underline text-sm">Start Learning →</button>
+              <p className="text-gray-500 text-sm mb-1">Your Progress</p>
+              <h3 className="text-2xl font-bold text-gray-900">{completedCount} of {courses.length}</h3>
+              <p className="text-gray-400 text-sm">courses completed</p>
+            </div>
+            <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center">
+              <span className="text-3xl">🎓</span>
+            </div>
+          </div>
+
+          <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
+            <div 
+              className="bg-black h-2 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <p className="text-gray-500 text-sm">{Math.round(progress)}% complete</p>
+        </div>
+      </div>
+
+      {/* AI Recommendation */}
+      <div className="px-4 py-4">
+        <div 
+          className="rounded-2xl p-4 shadow-sm"
+          style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-lg">✨</span>
+            </div>
+            <div className="flex-1">
+              <h4 className="text-black font-semibold mb-1">AI Recommendation</h4>
+              <p className="text-black/70 text-sm mb-3">Based on your RyScore, start with "How to Improve Your RyScore"</p>
+              <button className="text-black font-medium text-sm flex items-center gap-1">
+                Start Learning <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Recommended Courses */}
-      <div className="px-6 pb-6">
-        <h3 className="text-gray-900 mb-4">Recommended for You</h3>
-        <div className="space-y-4">
-          {courses.filter(c => c.recommended).map((course) => {
-            const Icon = course.icon;
-            return (
-              <div key={course.id} className={`${course.bgColor} rounded-2xl p-5 shadow-lg border border-gray-200`}>
-                <div className="flex items-start gap-4">
-                  <div className={`w-14 h-14 bg-gradient-to-br ${course.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Icon className="w-7 h-7 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <h4 className="text-gray-900 pr-2">{course.title}</h4>
-                      {!course.completed && (
-                        <button className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md flex-shrink-0">
-                          <Play className="w-5 h-5 text-purple-600" />
-                        </button>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-gray-600 text-sm">
-                      <div className="flex items-center gap-1">
+      <div className="px-4 pb-4">
+        <h3 className="text-gray-900 font-semibold mb-3">Recommended for You</h3>
+        <div className="space-y-3">
+          {courses.filter(c => c.recommended).map((course) => (
+            <div key={course.id} className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <span className="text-2xl">{course.emoji}</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1 pr-3">
+                      <h4 className="text-gray-900 font-medium mb-1">{course.title}</h4>
+                      <div className="flex items-center gap-2 text-gray-500 text-sm">
                         <Clock className="w-4 h-4" />
                         <span>{course.duration}</span>
+                        <span>•</span>
+                        <span>{course.difficulty}</span>
                       </div>
-                      <span>•</span>
-                      <span>{course.difficulty}</span>
                     </div>
-                    {course.completed && (
-                      <div className="mt-2 flex items-center gap-2 text-green-600 text-sm">
-                        <Award className="w-4 h-4" />
-                        <span>Completed</span>
+                    {!course.completed ? (
+                      <button className="w-10 h-10 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                        <Play className="w-5 h-5 text-white ml-0.5" />
+                      </button>
+                    ) : (
+                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
                       </div>
                     )}
                   </div>
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
 
       {/* All Courses */}
-      <div className="px-6 pb-32">
-        <h3 className="text-gray-900 mb-4">All Courses</h3>
-        <div className="space-y-3">
-          {courses.filter(c => !c.recommended).map((course) => {
-            const Icon = course.icon;
-            return (
-              <div key={course.id} className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 bg-gradient-to-br ${course.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-gray-900 text-sm mb-1">{course.title}</h4>
-                    <div className="flex items-center gap-2 text-gray-600 text-xs">
-                      <Clock className="w-3 h-3" />
-                      <span>{course.duration}</span>
-                      <span>•</span>
-                      <span>{course.difficulty}</span>
-                    </div>
-                  </div>
-                  {course.completed ? (
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                      <Award className="w-5 h-5 text-green-600" />
-                    </div>
-                  ) : (
-                    <button className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                      <Play className="w-4 h-4 text-purple-600" />
-                    </button>
-                  )}
+      <div className="px-4 pb-24">
+        <h3 className="text-gray-900 font-semibold mb-3">All Courses</h3>
+        <div className="space-y-2">
+          {courses.filter(c => !c.recommended).map((course) => (
+            <div key={course.id} className="bg-white rounded-2xl p-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">{course.emoji}</span>
                 </div>
+                <div className="flex-1">
+                  <h4 className="text-gray-900 font-medium text-sm mb-1">{course.title}</h4>
+                  <div className="flex items-center gap-2 text-gray-500 text-xs">
+                    <Clock className="w-3 h-3" />
+                    <span>{course.duration}</span>
+                    <span>•</span>
+                    <span>{course.difficulty}</span>
+                  </div>
+                </div>
+                {course.completed ? (
+                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                  </div>
+                ) : (
+                  <button className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Play className="w-4 h-4 text-gray-600 ml-0.5" />
+                  </button>
+                )}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
     </div>

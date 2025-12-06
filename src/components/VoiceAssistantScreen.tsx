@@ -1,9 +1,13 @@
+// ============================================
+// Voice Assistant Screen - Cash App Inspired
+// Clean white background, black accents
+// ============================================
+
 import { useState, useRef, useEffect } from 'react';
 import { Screen } from '../App';
-import { ArrowLeft, Mic, Volume2, Sparkles, Send, Loader2 } from 'lucide-react';
-import { RyseLogo } from './RyseLogo';
-import { BottomNav } from './BottomNav';
+import { ArrowLeft, Mic, Volume2, Send, Loader2, Zap } from 'lucide-react';
 import { chatWithGemini } from '../services/geminiService';
+import { PillButton } from './ui/pill-button';
 
 // TypeScript declarations for Speech Recognition API
 interface SpeechRecognition extends EventTarget {
@@ -82,7 +86,6 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
 
   // Initialize Speech Recognition
   useEffect(() => {
-    // Check if browser supports Speech Recognition
     const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
     
     if (!SpeechRecognition) {
@@ -93,7 +96,7 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.lang = 'en-US'; // You can change to 'zh-CN' for Chinese
+    recognition.lang = 'en-US';
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -121,7 +124,6 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
       if (finalTranscript) {
         setTranscript(finalTranscript.trim());
         setInputText(finalTranscript.trim());
-        // Auto-send when final transcript is received
         handleSendMessage(finalTranscript.trim());
       }
     };
@@ -169,7 +171,6 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
     };
   }, []);
 
-  // Auto scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -188,33 +189,26 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
     setInputText('');
     setIsLoading(true);
 
-    // Add user message
     const newUserMessage: Message = { id: Date.now(), type: 'user', text: userMessage };
     setMessages(prev => [...prev, newUserMessage]);
 
     try {
-      // Build conversation history for Gemini
       const conversationHistory = messages.map(msg => ({
         role: msg.type === 'user' ? 'user' as const : 'ai' as const,
         text: msg.text,
       }));
 
-      // Call Gemini AI
       const response = await chatWithGemini(userMessage, conversationHistory);
 
-      // Add AI response
       setMessages(prev => [...prev, { id: Date.now() + 1, type: 'ai', text: response.message }]);
 
-      // Handle actions
       if (response.action) {
         if (response.action.type === 'transfer' && response.action.data) {
-          // If amount is provided, check if it exceeds balance
           if (response.action.data.amount) {
             const transferAmount = parseFloat(response.action.data.amount || '0');
-            const currentBalance = 3847.50; // Current balance from dashboard
+            const currentBalance = 3847.50;
             
             if (transferAmount > currentBalance) {
-              // Show error message in English
               setMessages(prev => [...prev, {
                 id: Date.now() + 1,
                 type: 'ai',
@@ -224,7 +218,6 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
             }
           }
           
-          // Navigate directly to transaction screen with pre-filled data (if any)
           setTimeout(() => {
             navigateTo('transaction', {
               amount: response.action.data?.amount || '',
@@ -232,13 +225,10 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
             });
           }, 1500);
         } else if (response.action.type === 'apply_loan') {
-          // Navigate to loan application screen with loan amount if provided
-          // The LoanApplicationScreen will handle showing error if amount exceeds limit
           setTimeout(() => {
             navigateTo('loan', response.action.data || {});
           }, 1500);
         } else {
-          // Handle other actions (balance, earnings, etc.)
           let actionResponse = '';
           switch (response.action.type) {
             case 'check_balance':
@@ -292,11 +282,9 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
     }
 
     if (isListening) {
-      // Stop listening
       recognitionRef.current.stop();
       setIsListening(false);
     } else {
-      // Start listening
       try {
         recognitionRef.current.start();
       } catch (error) {
@@ -312,52 +300,61 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
   };
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 via-white to-blue-50">
+    <div className="h-full flex flex-col bg-gray-50">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 rounded-b-3xl shadow-xl">
-        <div className="flex items-center gap-4 mb-4">
+      <div className="bg-white px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className="w-6 h-6 text-black" />
           </button>
-          <div>
-            <h2 className="text-white">Ryse AI</h2>
-            <p className="text-purple-200 text-sm">Your Voice Banking Assistant</p>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-gray-900">Ryse AI</h2>
+            <p className="text-gray-500 text-sm">Your Voice Banking Assistant</p>
+          </div>
+          <div 
+            className="w-10 h-10 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+          >
+            <Zap className="w-5 h-5 text-black" />
           </div>
         </div>
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {message.type === 'ai' && (
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div 
+                className="w-8 h-8 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+                style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+              >
+                <Zap className="w-4 h-4 text-black" />
               </div>
             )}
             <div
-              className={`max-w-[70%] p-4 rounded-2xl ${
+              className={`max-w-[75%] p-4 rounded-2xl ${
                 message.type === 'user'
-                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-tr-sm'
-                  : 'bg-white border border-gray-200 text-gray-800 rounded-tl-sm'
+                  ? 'bg-black text-white rounded-br-sm'
+                  : 'bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm'
               }`}
             >
               <p 
-                className="text-sm"
+                className="text-sm leading-relaxed"
                 dangerouslySetInnerHTML={{
                   __html: message.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 }}
               />
             </div>
             {message.type === 'user' && (
-              <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center ml-3 flex-shrink-0">
-                <span className="text-white">AR</span>
+              <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center ml-2 flex-shrink-0">
+                <span className="text-gray-600 text-xs font-medium">You</span>
               </div>
             )}
           </div>
@@ -365,14 +362,14 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
 
         {isListening && (
           <div className="flex justify-center">
-            <div className="bg-purple-100 border border-purple-200 rounded-2xl px-6 py-3 flex items-center gap-3">
+            <div className="bg-gray-100 border border-gray-200 rounded-full px-6 py-3 flex items-center gap-3">
               <div className="flex gap-1">
-                <div className="w-1 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-                <div className="w-1 h-6 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-1 h-4 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                <div className="w-1 h-4 bg-black rounded-full animate-pulse"></div>
+                <div className="w-1 h-6 bg-black rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-1 h-4 bg-black rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
               </div>
-              <span className="text-purple-700 text-sm">
-                {transcript ? `Listening: "${transcript}"` : 'Listening...'}
+              <span className="text-gray-700 text-sm">
+                {transcript ? `"${transcript}"` : 'Listening...'}
               </span>
             </div>
           </div>
@@ -380,12 +377,15 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
 
         {isLoading && (
           <div className="flex justify-start">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-white" />
+            <div 
+              className="w-8 h-8 rounded-full flex items-center justify-center mr-2 flex-shrink-0"
+              style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+            >
+              <Zap className="w-4 h-4 text-black" />
             </div>
-            <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm p-4 flex items-center gap-2">
-              <Loader2 className="w-4 h-4 text-purple-500 animate-spin" />
-              <span className="text-gray-600 text-sm">Ryse AI is thinking...</span>
+            <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm p-4 flex items-center gap-2 shadow-sm">
+              <Loader2 className="w-4 h-4 text-gray-600 animate-spin" />
+              <span className="text-gray-600 text-sm">Thinking...</span>
             </div>
           </div>
         )}
@@ -394,14 +394,13 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
       </div>
 
       {/* Quick Actions */}
-      <div className="px-6 pb-4">
-        <p className="text-gray-600 text-sm mb-3">Quick actions:</p>
-        <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="px-4 pb-3">
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
           {quickActions.map((action, index) => (
             <button
               key={index}
               onClick={() => handleQuickAction(action)}
-              className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 whitespace-nowrap hover:bg-gray-50"
+              className="px-4 py-2 bg-white border border-gray-200 rounded-full text-sm text-gray-700 whitespace-nowrap hover:bg-gray-50 transition-colors"
             >
               {action}
             </button>
@@ -409,9 +408,10 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
         </div>
       </div>
 
-      {/* Text Input */}
-      <div className="px-6 pb-4">
-        <div className="bg-white rounded-2xl p-2 border border-gray-200 shadow-lg flex items-center gap-2">
+      {/* Input Area */}
+      <div className="px-4 pb-4 space-y-3">
+        {/* Text Input */}
+        <div className="bg-white rounded-full border border-gray-200 flex items-center gap-2 p-1 shadow-sm">
           <input
             type="text"
             value={inputText}
@@ -429,7 +429,7 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
           <button
             onClick={() => handleSendMessage(inputText)}
             disabled={!inputText.trim() || isLoading}
-            className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="w-10 h-10 bg-black rounded-full flex items-center justify-center disabled:bg-gray-300 disabled:cursor-not-allowed transition-all"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 text-white animate-spin" />
@@ -438,32 +438,28 @@ export function VoiceAssistantScreen({ navigateTo }: VoiceAssistantScreenProps) 
             )}
           </button>
         </div>
-      </div>
 
-      {/* Voice Input Button */}
-      <div className="px-6 pb-24">
+        {/* Voice Input Button */}
         <button
           onClick={toggleListening}
           disabled={isLoading}
-          className={`w-full h-16 rounded-2xl flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
+          className={`w-full h-14 rounded-full flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${
             isListening
-              ? 'bg-gradient-to-r from-red-500 to-pink-500 animate-pulse'
-              : 'bg-gradient-to-r from-purple-500 to-blue-500'
-          } shadow-xl`}
+              ? 'bg-red-500'
+              : 'bg-black'
+          }`}
         >
-          <Mic className="w-6 h-6 text-white" />
-          <span className="text-white">
-            {isListening ? 'Listening...' : 'Tap to speak'}
+          <Mic className="w-5 h-5 text-white" />
+          <span className="text-white font-medium">
+            {isListening ? 'Tap to stop' : 'Tap to speak'}
           </span>
         </button>
         
-        <div className="mt-3 flex items-center justify-center gap-2 text-gray-500 text-xs">
-          <Volume2 className="w-4 h-4" />
+        <div className="flex items-center justify-center gap-2 text-gray-400 text-xs">
+          <Volume2 className="w-3 h-3" />
           <span>Voice commands are secured with Ryse Shield</span>
         </div>
       </div>
-
-      <BottomNav currentScreen="voice" navigateTo={navigateTo} />
     </div>
   );
 }

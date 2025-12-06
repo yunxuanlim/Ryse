@@ -1,6 +1,10 @@
+// ============================================
+// Income Tracking Screen - Cash App Inspired
+// Clean white cards, black accents, minimal UI
+// ============================================
+
 import { Screen } from '../App';
-import { ArrowLeft, TrendingUp, TrendingDown, Calendar, AlertTriangle, Lightbulb } from 'lucide-react';
-import { RyseLogo } from './RyseLogo';
+import { ArrowLeft, TrendingUp, Calendar, AlertTriangle, Lightbulb, ChevronRight } from 'lucide-react';
 import { BottomNav } from './BottomNav';
 
 interface IncomeTrackingScreenProps {
@@ -19,69 +23,74 @@ export function IncomeTrackingScreen({ navigateTo }: IncomeTrackingScreenProps) 
   ];
 
   const maxAmount = Math.max(...weeklyData.map(d => d.amount));
+  const todayIndex = 5; // Saturday as example
 
   const platforms = [
-    { name: 'Grab', amount: 840, percentage: 58, color: 'bg-green-500' },
-    { name: 'Foodpanda', amount: 480, percentage: 33, color: 'bg-pink-500' },
-    { name: 'Private Jobs', amount: 130, percentage: 9, color: 'bg-blue-500' }
+    { name: 'Grab', amount: 840, percentage: 58, emoji: '🚗' },
+    { name: 'Foodpanda', amount: 480, percentage: 33, emoji: '🍕' },
+    { name: 'Private Jobs', amount: 130, percentage: 9, emoji: '💼' }
   ];
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 via-white to-blue-50 overflow-y-auto">
+    <div className="h-full flex flex-col bg-gray-50 overflow-y-auto pb-20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-6 rounded-b-3xl shadow-xl">
-        <div className="flex items-center gap-4 mb-6">
+      <div className="bg-white px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => navigateTo('dashboard')}
-            className="w-10 h-10 bg-white/20 backdrop-blur-xl rounded-full flex items-center justify-center"
+            className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className="w-6 h-6 text-black" />
           </button>
-          <div>
-            <h2 className="text-white">Income Tracking</h2>
-            <p className="text-purple-200 text-sm">Smart Cashflow Insights</p>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-gray-900">Activity</h2>
+            <p className="text-gray-500 text-sm">Track your income</p>
           </div>
+          <button className="flex items-center gap-2 text-gray-600 text-sm">
+            <Calendar className="w-4 h-4" />
+            <span>This Week</span>
+          </button>
         </div>
+      </div>
 
-        {/* This Week Summary */}
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
-          <p className="text-purple-200 text-sm mb-2">This Week's Income</p>
-          <div className="flex items-end gap-3 mb-3">
-            <h1 className="text-white">RM 1,450</h1>
-            <div className="mb-2 px-3 py-1 bg-green-500/20 rounded-full flex items-center gap-1">
-              <TrendingUp className="w-4 h-4 text-green-400" />
-              <span className="text-green-400 text-sm">+22%</span>
+      {/* Summary Card */}
+      <div className="px-4 pt-4">
+        <div className="bg-white rounded-3xl p-5 shadow-sm">
+          <p className="text-gray-500 text-sm mb-1">This Week's Income</p>
+          <div className="flex items-end gap-3 mb-2">
+            <h1 className="text-4xl font-bold text-gray-900">RM 1,450</h1>
+            <div className="mb-1 px-3 py-1 bg-green-100 rounded-full flex items-center gap-1">
+              <TrendingUp className="w-4 h-4 text-green-600" />
+              <span className="text-green-600 text-sm font-medium">+22%</span>
             </div>
           </div>
-          <p className="text-purple-200 text-sm">71 hours worked across all platforms</p>
+          <p className="text-gray-400 text-sm">71 hours worked across all platforms</p>
         </div>
       </div>
 
       {/* Weekly Chart */}
-      <div className="px-6 py-6">
-        <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-900">Daily Breakdown</h3>
-            <button className="flex items-center gap-2 text-purple-600 text-sm">
-              <Calendar className="w-4 h-4" />
-              <span>This Week</span>
-            </button>
-          </div>
+      <div className="px-4 py-4">
+        <div className="bg-white rounded-3xl p-5 shadow-sm">
+          <h3 className="text-gray-900 font-semibold mb-4">Daily Breakdown</h3>
 
-          <div className="flex items-end justify-between h-48 gap-2">
+          <div className="flex items-end justify-between h-40 gap-2">
             {weeklyData.map((data, index) => (
               <div key={index} className="flex-1 flex flex-col items-center">
-                <div className="w-full flex flex-col justify-end h-40 mb-2">
+                <div className="w-full flex flex-col justify-end h-32 mb-2">
                   <div
-                    className="w-full bg-gradient-to-t from-purple-500 to-blue-500 rounded-t-lg relative group cursor-pointer"
+                    className={`w-full rounded-lg relative group cursor-pointer transition-colors ${
+                      index === todayIndex ? 'bg-black' : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
                     style={{ height: `${(data.amount / maxAmount) * 100}%` }}
                   >
-                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                       RM {data.amount}
                     </div>
                   </div>
                 </div>
-                <span className="text-gray-600 text-xs">{data.day}</span>
+                <span className={`text-xs ${index === todayIndex ? 'text-black font-semibold' : 'text-gray-400'}`}>
+                  {data.day}
+                </span>
               </div>
             ))}
           </div>
@@ -89,73 +98,84 @@ export function IncomeTrackingScreen({ navigateTo }: IncomeTrackingScreenProps) 
       </div>
 
       {/* Platform Breakdown */}
-      <div className="px-6 pb-6">
-        <h3 className="text-gray-900 mb-4">Income by Platform</h3>
-        <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100 space-y-4">
+      <div className="px-4 pb-4">
+        <h3 className="text-gray-900 font-semibold mb-3">Income by Platform</h3>
+        <div className="bg-white rounded-3xl p-5 shadow-sm space-y-4">
           {platforms.map((platform, index) => (
             <div key={index}>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-800">{platform.name}</span>
-                <span className="text-gray-900">RM {platform.amount}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{platform.emoji}</span>
+                  <span className="text-gray-800 font-medium">{platform.name}</span>
+                </div>
+                <span className="text-gray-900 font-semibold">RM {platform.amount}</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex-1 bg-gray-200 rounded-full h-2">
-                  <div className={`${platform.color} h-2 rounded-full`} style={{ width: `${platform.percentage}%` }}></div>
+                <div className="flex-1 bg-gray-100 rounded-full h-2">
+                  <div 
+                    className="bg-black h-2 rounded-full transition-all" 
+                    style={{ width: `${platform.percentage}%` }}
+                  />
                 </div>
-                <span className="text-gray-600 text-sm w-12 text-right">{platform.percentage}%</span>
+                <span className="text-gray-500 text-sm w-12 text-right">{platform.percentage}%</span>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* AI Predictions */}
-      <div className="px-6 pb-6">
-        <h3 className="text-gray-900 mb-4">AI Cashflow Prediction</h3>
+      {/* AI Insights */}
+      <div className="px-4 pb-4">
+        <h3 className="text-gray-900 font-semibold mb-3">AI Insights</h3>
         
         {/* Warning Alert */}
-        <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-2xl p-4 border border-orange-200 mb-3">
+        <div className="bg-amber-50 rounded-2xl p-4 mb-3">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
             </div>
-            <div>
-              <h4 className="text-orange-900 mb-1">Cashflow Warning</h4>
-              <p className="text-orange-700 text-sm mb-2">You may be short RM 150 for bills next Tuesday based on your predicted income.</p>
-              <button className="text-orange-900 text-sm underline">View suggestions</button>
+            <div className="flex-1">
+              <h4 className="text-gray-900 font-medium mb-1">Cashflow Warning</h4>
+              <p className="text-gray-600 text-sm mb-2">You may be short RM 150 for bills next Tuesday.</p>
+              <button className="text-black text-sm font-medium flex items-center gap-1">
+                View suggestions <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
 
         {/* Insight */}
-        <div className="bg-gradient-to-r from-blue-100 to-cyan-100 rounded-2xl p-4 border border-blue-200">
+        <div 
+          className="rounded-2xl p-4"
+          style={{ backgroundColor: 'var(--ryse-green, #B9FF00)' }}
+        >
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center flex-shrink-0">
               <Lightbulb className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <h4 className="text-blue-900 mb-1">Peak Earning Insight</h4>
-              <p className="text-blue-700 text-sm">You earn most on Friday nights 7-10pm (avg RM 85/hr). Consider working more during this window.</p>
+            <div className="flex-1">
+              <h4 className="text-black font-medium mb-1">Peak Earning Insight</h4>
+              <p className="text-black/70 text-sm">You earn most on Friday nights 7-10pm (avg RM 85/hr). Work more during this window!</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Next 7 Days Prediction */}
-      <div className="px-6 pb-24">
-        <h3 className="text-gray-900 mb-4">Next 7 Days Forecast</h3>
-        <div className="bg-white rounded-2xl p-5 shadow-lg border border-gray-100">
+      <div className="px-4 pb-24">
+        <h3 className="text-gray-900 font-semibold mb-3">Next 7 Days Forecast</h3>
+        <div className="bg-white rounded-3xl p-5 shadow-sm">
           <div className="grid grid-cols-7 gap-2">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, index) => {
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => {
               const amounts = [180, 140, 200, 220, 290, 310, 190];
               const amount = amounts[index];
               const isLow = amount < 160;
               
               return (
                 <div key={index} className="text-center">
-                  <p className="text-gray-600 text-xs mb-2">{day}</p>
-                  <div className={`px-2 py-3 rounded-lg ${isLow ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'}`}>
-                    <p className={`text-sm ${isLow ? 'text-red-700' : 'text-green-700'}`}>
+                  <p className="text-gray-400 text-xs mb-2">{day}</p>
+                  <div className={`py-2 rounded-xl ${isLow ? 'bg-red-50' : 'bg-gray-50'}`}>
+                    <p className={`text-sm font-medium ${isLow ? 'text-red-600' : 'text-gray-700'}`}>
                       {amount}
                     </p>
                   </div>
@@ -163,7 +183,7 @@ export function IncomeTrackingScreen({ navigateTo }: IncomeTrackingScreenProps) 
               );
             })}
           </div>
-          <p className="text-gray-500 text-xs text-center mt-4">Predicted income in RM based on your work patterns</p>
+          <p className="text-gray-400 text-xs text-center mt-4">Predicted income in RM</p>
         </div>
       </div>
 

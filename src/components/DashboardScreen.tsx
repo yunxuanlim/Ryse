@@ -3,29 +3,23 @@
 // Gray background, white cards, minimal layout
 // ============================================
 
-import { useState, useEffect } from 'react';
 import { Screen } from '../App';
 import { 
   Search,
   TrendingUp, 
-  CreditCard, 
-  PiggyBank, 
   Shield, 
-  Users, 
-  GraduationCap,
-  ArrowDownRight,
   ChevronRight,
   AlertCircle,
   Plus,
   Minus,
-  Mic,
   Clock,
   DollarSign
 } from 'lucide-react';
-import { BottomNav } from './BottomNav';
 import { User } from '../types';
 import { RyseCard } from './RyseCard';
 import { PillButton } from './ui/pill-button';
+import { RyseFAB } from './gluestack/RyseFAB';
+import { ActionGrid } from './gluestack/ActionGrid';
 
 interface DashboardScreenProps {
   navigateTo: (screen: Screen) => void;
@@ -169,49 +163,20 @@ export function DashboardScreen({ navigateTo, user, onLogout }: DashboardScreenP
           </div>
         </div>
 
-        {/* Voice Assistant */}
-        <button
-          onClick={() => navigateTo('voice')}
-          className="w-full bg-white rounded-3xl p-5 shadow-sm flex items-center gap-4"
-        >
-          <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
-            <Mic className="w-6 h-6 text-white" />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="text-gray-900 font-semibold">Talk to Ryse</p>
-            <p className="text-gray-500 text-sm">Ask about your finances</p>
-          </div>
-          <ChevronRight className="w-5 h-5 text-gray-400" />
-        </button>
-
-        {/* More for you */}
+        {/* Quick Actions Grid */}
         <div className="pt-2">
-          <h3 className="text-gray-900 font-semibold mb-3 px-1">More for you</h3>
-          <div className="space-y-2">
-            {[
-              { icon: CreditCard, label: 'Quick Advance', desc: 'Get up to RM 500', screen: 'loan' as Screen },
-              { icon: PiggyBank, label: 'Start Saving', desc: 'Earn 3.75% APY', screen: 'savings' as Screen },
-              { icon: GraduationCap, label: 'Financial Tips', desc: 'Learn to grow wealth', screen: 'education' as Screen },
-              { icon: Users, label: 'Community', desc: 'Connect with others', screen: 'community' as Screen },
-            ].map((item) => (
-              <button
-                key={item.label}
-                onClick={() => navigateTo(item.screen)}
-                className="w-full bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm"
-              >
-                <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                  <item.icon className="w-5 h-5 text-gray-700" />
-                </div>
-                <div className="flex-1 text-left">
-                  <p className="text-gray-900 font-medium">{item.label}</p>
-                  <p className="text-gray-500 text-xs">{item.desc}</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </button>
-            ))}
-          </div>
+          <h3 className="text-gray-900 font-semibold mb-3 px-1">Quick Actions</h3>
+          <ActionGrid onNavigate={navigateTo} />
         </div>
       </div>
+
+      {/* Ryse Voice FAB - Floating Action Button */}
+      <RyseFAB 
+        onPress={() => navigateTo('voice')}
+        label="Ask Ryse"
+        size={64}
+        showLabel={true}
+      />
 
       {/* Bottom Navigation - Simplified */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-8 py-4 flex items-center justify-around max-w-md mx-auto">
@@ -222,13 +187,8 @@ export function DashboardScreen({ navigateTo, user, onLogout }: DashboardScreenP
           <DollarSign className="w-6 h-6 text-black" />
           <span className="text-xs font-medium text-black">$1</span>
         </button>
-        <button 
-          onClick={() => navigateTo('transaction')}
-          className="flex flex-col items-center gap-1"
-        >
-          <div className="w-6 h-6 flex items-center justify-center text-gray-400 font-bold">$</div>
-          <span className="text-xs text-gray-400">Pay</span>
-        </button>
+        {/* Spacer for FAB */}
+        <div className="w-16" />
         <button 
           onClick={() => navigateTo('income')}
           className="flex flex-col items-center gap-1"
